@@ -33,6 +33,8 @@ passport.use(new FacebookStrategy({
     callbackURL: "http://spotiface-grisard.rhcloud.com/spoti"
   },
   function(accessToken, refreshToken, profile, done) {
+    console.log(accessToken);
+  
    // User.findOrCreate(..., function(err, user) {
      // if (err) { return done(err); }
    //   done(null, user);
