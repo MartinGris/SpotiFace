@@ -28,8 +28,8 @@ var passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy;
 
 passport.use(new FacebookStrategy({
-    clientID: 656991001080494,
-    clientSecret: 57762c91c1d1bc4ed348334a19b7a015,
+    clientID: '656991001080494',
+    clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
     callbackURL: "http://www.example.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
