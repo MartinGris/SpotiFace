@@ -30,7 +30,7 @@ var passport = require('passport')
 passport.use(new FacebookStrategy({
     clientID: '656991001080494',
     clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
-    callbackURL: "http://spotiface-grisard.rhcloud.com/"
+    callbackURL: "http://spotiface-grisard.rhcloud.com/spoti"
   },
   function(accessToken, refreshToken, profile, done) {
    // User.findOrCreate(..., function(err, user) {
@@ -65,6 +65,12 @@ app.get('/', function(req, res){
 	
 	});
 
+});
+
+app.get('/spoti', function(req, res){
+    console.log('spoti');
+	res.render('spoti');
+	
 });
 
 io.on('connection', function(socket){
