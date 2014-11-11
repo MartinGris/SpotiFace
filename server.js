@@ -30,13 +30,13 @@ var passport = require('passport')
 passport.use(new FacebookStrategy({
     clientID: '656991001080494',
     clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
-    callbackURL: "http://www.example.com/auth/facebook/callback"
+    callbackURL: "http://spotiface-grisard.rhcloud.com/"
   },
   function(accessToken, refreshToken, profile, done) {
-    User.findOrCreate(..., function(err, user) {
-      if (err) { return done(err); }
-      done(null, user);
-    });
+   // User.findOrCreate(..., function(err, user) {
+     // if (err) { return done(err); }
+   //   done(null, user);
+    //});
   }
 ));
 // Redirect the user to Facebook for authentication.  When complete,
