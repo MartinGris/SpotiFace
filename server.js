@@ -12,7 +12,7 @@ app.set('view engine', 'ejs');
 
 var db = mysql.createConnection(
     {
-      host     : $OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT,
+      host     : '$OPENSHIFT_MYSQL_DB_HOST:$OPENSHIFT_MYSQL_DB_PORT',
       user     : 'admin9zvwmFv',
       password : 'pNKjnPB_cvaB',
       database : 'chat',
