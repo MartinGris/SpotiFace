@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="javascripts/animatescroll.js"></script>
+  </head>
+  
+  <body>
+  
+  <h1 class="text-center">socket.io Chat</h1>
+  
+	<div class="row">
+		<div id="messageContainer" class="col-md-8 col-md-offset-2" style="overflow:scroll; height: 500px; margin-top:10%">
+			<table class="table table-striped table-hover table-condensed " id="messages">
+
+				<% if(data.length){
+					for(var i = 0;i < data.length;i++) { 
+						var date = new Date(  data[i].date );
+						var niceDateTime = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+				%>   
+						<tr>
+							<td> <%= niceDateTime %> </td><td> <%= data[i].content %> </td>
+						</tr>
+				<% 	}
+				}%>
+			</table>
+		</div>
+	</div>
+	
+	<div class="row">
+		<form class="form-horizontal" role="form">
+			<div class="form-group">
+				<label for="inputMessage" class="col-md-2 control-label">Neue Nachricht</label>
+				<div class="col-md-8">
+					<input class="form-control" id="inputMessage" placeholder="Nachricht" autocomplete="off">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="col-md-offset-2 col-md-10">
+					<button id="buttonSend" class="btn btn-primary">Senden</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+    <script>
+	
+      var socket = io();
+	  
+	 $('#messages tr:last').animatescroll({scrollSpeed:3000,element:'#messageContainer'});
+
+      $('#buttonSend').click(function(){
+        socket.emit('send chat message', $('#inputMessage').val());
+        $('#inputMessage').val('');
+        return false;
+      });
+
+      socket.on('new chat message', function(row){
+		var date = new Date(row.date);
+		var niceDate = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+		$('#messages').append($('<tr>')
+			.append($('<td>').text(niceDate))
+			.append($('<td>').text(row.content)));
+			
+		$('#messages tr:last').animatescroll({scrollSpeed:4000,element:'#messageContainer'});
+		 
+      });
+
+
+    </script>
+  </body>
+</html>
+
