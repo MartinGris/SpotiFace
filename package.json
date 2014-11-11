@@ -28,7 +28,9 @@
     "express": "~4.9.0",
 	"ejs": "1.0.0",
 	"socket.io": "1.1.0",
-	"mysql": "2.5.2"
+	"mysql": "2.5.2",
+    "passport": "0.2.1"
+    
   },
   "devDependencies": {},
   "bundleDependencies": [],
