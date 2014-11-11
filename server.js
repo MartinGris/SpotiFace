@@ -30,6 +30,7 @@ app.get('/', function(req, res){
 		if(err)
            console.log("Error Selecting : %s ",err );
 		     
+        console.log(rows);
 		res.render('index',{data:rows});
 	
 	});
