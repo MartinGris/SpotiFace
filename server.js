@@ -24,6 +24,8 @@ db.connect(function(err){
 })
 
 app.get('/', function(req, res){
+    console.log('hello world');
+
 	db.query('SELECT * FROM message', function(err, rows){
 		if(err)
            console.log("Error Selecting : %s ",err );
