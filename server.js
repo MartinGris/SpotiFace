@@ -51,7 +51,7 @@ app.get('/auth/facebook', passport.authenticate('facebook'));
 // authentication has failed.
 app.get('/auth/facebook/callback', 
   passport.authenticate('facebook', { successRedirect: '/',
-                                      failureRedirect: '/login' }));
+                                      failureRedirect: "http://spotiface-grisard.rhcloud.com" }));
 
 
 app.get('/', function(req, res){
