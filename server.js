@@ -8,15 +8,14 @@ var io = require('socket.io')(http);
 
 app.use(express.static(__dirname + '/public'));
 
-app.configure(function() {
-  app.use(express.static('public'));
-  app.use(express.cookieParser());
-  app.use(express.bodyParser());
-  app.use(express.session({ secret: '!mast3rOfDes4st3r!' }));
-  app.use(passport.initialize());
-  app.use(passport.session());
-  app.use(app.router);
-});
+app.use(express.static('public'));
+app.use(express.cookieParser());
+app.use(express.bodyParser());
+app.use(express.session({ secret: '!mast3rOfDes4st3r!' }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(app.router);
+
 
 
 
