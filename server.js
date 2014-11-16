@@ -15,7 +15,7 @@ var passport = require('passport')
 
 app.use(express.static(__dirname + '/public'));
 
-app.use(express.static('public'));
+// app.use(express.static('public'));
 app.use(cookieParser);
 app.use(bodyParser);
 app.use(session({ secret: '!mast3rOfDes4st3r!' }));
@@ -83,7 +83,7 @@ app.get('/auth/facebook/callback',
 
 app.get('/', function(req, res){
     console.log('hello world');
-    res.render('index');
+    res.render('index',{});
     
 	// db.query('SELECT * FROM message', function(err, rows){
 		// if(err)
