@@ -3,30 +3,53 @@
 var express = require('express');
 var app = express();
 var http = require('http').Server(app);
-var mysql = require('mysql');
+// var mysql = require('mysql');
 var io = require('socket.io')(http); 
 
 app.use(express.static(__dirname + '/public'));
 
+app.configure(function() {
+  app.use(express.static('public'));
+  app.use(express.cookieParser());
+  app.use(express.bodyParser());
+  app.use(express.session({ secret: '!mast3rOfDes4st3r!' }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(app.router);
+});
+
+
+
 app.set('view engine', 'ejs');
 
-var db = mysql.createConnection(
-    {
-      host     : process.env.OPENSHIFT_MYSQL_DB_HOST,
-      user     : process.env.OPENSHIFT_MYSQL_DB_USERNAME,
-      password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
-      database : 'chat',
-    }
-);
+// var db = mysql.createConnection(
+    // {
+      // host     : process.env.OPENSHIFT_MYSQL_DB_HOST,
+      // user     : process.env.OPENSHIFT_MYSQL_DB_USERNAME,
+      // password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
+      // database : 'chat',
+    // }
+// );
 
-db.connect(function(err){
-    if (err) console.log(err)
-});
+// db.connect(function(err){
+    // if (err) console.log(err)
+// });
 
 
 var passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy;
 
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});  
+  
+  
 passport.use(new FacebookStrategy({
     clientID: '656991001080494',
     clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
@@ -57,40 +80,47 @@ app.get('/auth/facebook/callback',
 app.get('/', function(req, res){
     console.log('hello world');
 
-	db.query('SELECT * FROM message', function(err, rows){
-		if(err)
-           console.log("Error Selecting : %s ",err );
+	// db.query('SELECT * FROM message', function(err, rows){
+		// if(err)
+           // console.log("Error Selecting : %s ",err );
 		     
-        console.log(rows);
-		res.render('index',{data:rows});
+        // console.log(rows);
+		// res.render('index',{data:rows});
 	
-	});
+	// });
 
 });
 
-app.get('/spoti', function(req, res){
+app.get('/spoti', ensureAuthenticated,, function(req, res){
     console.log('spoti');
-	res.render('spoti');
-	
+   
+    User.findById(req.session.passport.user, function(err, user) {
+        if(err) {
+            console.log(err);
+        } else {
+        	res.render('spoti', { user: user});
+            // res.render('account', { user: user});
+        }
+	});
 });
 
 io.on('connection', function(socket){
 	console.log('a user connected');
 
-	socket.on('send chat message', function(msg){
-		var now = new Date();
-		var data = {
-			content   : msg,
-			date   :  now    
-        };
+	// socket.on('send chat message', function(msg){
+		// var now = new Date();
+		// var data = {
+			// content   : msg,
+			// date   :  now    
+        // };
 	
-		var query = db.query("INSERT INTO message set ? ",data, function(err, rows){
-            if (err)
-				console.log("Error inserting : %s ",err );
-        });
+		// var query = db.query("INSERT INTO message set ? ",data, function(err, rows){
+            // if (err)
+				// console.log("Error inserting : %s ",err );
+        // });
 
-    	io.emit('new chat message', data);
-  	});
+    	// io.emit('new chat message', data);
+  	// });
 
   	socket.on('disconnect', function(){
     	console.log('user disconnected');
@@ -111,4 +141,11 @@ if (typeof ipaddress === "undefined") {
 http.listen(port, ipaddress, function(){
   console.log('listening on :' + port );
 });
+
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()){
+        return next(); 
+    }
+    res.redirect('/')
+}
 
