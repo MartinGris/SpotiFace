@@ -1,7 +1,9 @@
 #!/bin/env node
 
 var express = require('express');
-var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var session = require('express-session');
 var app = express();
 var http = require('http').Server(app);
 // var mysql = require('mysql');
@@ -11,8 +13,8 @@ app.use(express.static(__dirname + '/public'));
 
 app.use(express.static('public'));
 app.use(cookieParser);
-app.use(express.bodyParser());
-app.use(express.session({ secret: '!mast3rOfDes4st3r!' }));
+app.use(bodyParser);
+app.use(session({ secret: '!mast3rOfDes4st3r!' }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
