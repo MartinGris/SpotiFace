@@ -9,6 +9,10 @@ var http = require('http').Server(app);
 // var mysql = require('mysql');
 var io = require('socket.io')(http); 
 
+var passport = require('passport')
+  , FacebookStrategy = require('passport-facebook').Strategy;
+
+
 app.use(express.static(__dirname + '/public'));
 
 app.use(express.static('public'));
@@ -38,8 +42,6 @@ app.set('view engine', 'ejs');
 // });
 
 
-var passport = require('passport')
-  , FacebookStrategy = require('passport-facebook').Strategy;
 
 passport.serializeUser(function(user, done) {
   done(null, user.id);
