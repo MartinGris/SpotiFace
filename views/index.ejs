@@ -17,16 +17,6 @@
 		<div id="messageContainer" class="col-md-8 col-md-offset-2" style="overflow:scroll; height: 500px; margin-top:10%">
 			<table class="table table-striped table-hover table-condensed " id="messages">
 
-				<% if(data.length){
-					for(var i = 0;i < data.length;i++) { 
-						var date = new Date(  data[i].date );
-						var niceDateTime = date.toLocaleDateString() + " " + date.toLocaleTimeString();
-				%>   
-						<tr>
-							<td> <%= niceDateTime %> </td><td> <%= data[i].content %> </td>
-						</tr>
-				<% 	}
-				}%>
 			</table>
 		</div>
 	</div>
@@ -50,27 +40,7 @@
     <a href="/auth/facebook">Login with Facebook</a>
 
     <script>
-	
-      var socket = io();
-	  
-	 $('#messages tr:last').animatescroll({scrollSpeed:3000,element:'#messageContainer'});
 
-      $('#buttonSend').click(function(){
-        socket.emit('send chat message', $('#inputMessage').val());
-        $('#inputMessage').val('');
-        return false;
-      });
-
-      socket.on('new chat message', function(row){
-		var date = new Date(row.date);
-		var niceDate = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
-		$('#messages').append($('<tr>')
-			.append($('<td>').text(niceDate))
-			.append($('<td>').text(row.content)));
-			
-		$('#messages tr:last').animatescroll({scrollSpeed:4000,element:'#messageContainer'});
-		 
-      });
 
 
     </script>

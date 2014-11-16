@@ -83,7 +83,8 @@ app.get('/auth/facebook/callback',
 
 app.get('/', function(req, res){
     console.log('hello world');
-
+    res.render('index');
+    
 	// db.query('SELECT * FROM message', function(err, rows){
 		// if(err)
            // console.log("Error Selecting : %s ",err );
