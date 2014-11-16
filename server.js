@@ -91,7 +91,7 @@ app.get('/', function(req, res){
 
 });
 
-app.get('/spoti', ensureAuthenticated,, function(req, res){
+app.get('/spoti', ensureAuthenticated, function(req, res){
     console.log('spoti');
    
     User.findById(req.session.passport.user, function(err, user) {
