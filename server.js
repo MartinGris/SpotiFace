@@ -1,6 +1,7 @@
 #!/bin/env node
 
 var express = require('express');
+var cookieParser = require('cookie-parser')
 var app = express();
 var http = require('http').Server(app);
 // var mysql = require('mysql');
@@ -9,7 +10,7 @@ var io = require('socket.io')(http);
 app.use(express.static(__dirname + '/public'));
 
 app.use(express.static('public'));
-app.use(express.cookieParser());
+app.use(cookieParser);
 app.use(express.bodyParser());
 app.use(express.session({ secret: '!mast3rOfDes4st3r!' }));
 app.use(passport.initialize());
