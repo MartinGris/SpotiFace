@@ -34,6 +34,8 @@ router.get('/info',function(req,res){
   res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
 });
 
+app.use(router);
+
 mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
   // If error connecting
   if(e) throw e;
@@ -54,7 +56,7 @@ mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
     }));
 
 
-    app.use(router);
+
     
     
   start();
