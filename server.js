@@ -23,7 +23,7 @@ app.set('view engine', 'ejs');
 var router = express.Router(); 	
 
 router.get('/', function(req, res){
-  res.sendFile('index2.html');
+  res.sendFile(__dirname + 'index2.html');
   // res.render('index',{});
 });
 router.post('/',function(req,res){
