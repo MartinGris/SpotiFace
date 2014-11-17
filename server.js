@@ -7,6 +7,8 @@ var cookieParser = require('cookie-parser');
 var session      = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
+var mongoose = require('mongoose');
+
 var app = express();
 
 var http = require('http').Server(app);
@@ -15,15 +17,11 @@ var io = require('socket.io')(http);
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
-var sessionStore = new MongoStore({
-                db: 'express',
-                host: process.env.OPENSHIFT_MONGODB_DB_HOST,
-                port: process.env.OPENSHIFT_MONGODB_DB_PORT,  
-                username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
-                password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD, 
-                collection: 'session', 
-                auto_reconnect:true
-            }, function(e) {
+mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
+  // If error connecting
+  if(e) throw e;
+
+  var sessionStore = new MongoStore({ mongoose_connection: mongoose.connection });
 
   app.use(cookieParser);
 
@@ -33,10 +31,34 @@ var sessionStore = new MongoStore({
         resave: true,
         saveUninitialized: true,
         store: sessionStore
-}));
+    }));
 
   start();
 });
+
+
+// var sessionStore = new MongoStore({
+                // db: 'express',
+                // host: process.env.OPENSHIFT_MONGODB_DB_HOST,
+                // port: process.env.OPENSHIFT_MONGODB_DB_PORT,  
+                // username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
+                // password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD, 
+                // collection: 'session', 
+                // auto_reconnect:true
+            // }, function(e) {
+
+  // app.use(cookieParser);
+
+    // app.use(session({
+        // cookie: { maxAge: 1000*60*2 } , // 2 Minuten
+        // secret: "session secret" ,
+        // resave: true,
+        // saveUninitialized: true,
+        // store: sessionStore
+    // }));
+
+  // start();
+// });
 
 
 
