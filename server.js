@@ -28,17 +28,7 @@ router.post('/',function(req,res){
   res.redirect('/info');
 });
 router.get('/info',function(req,res){
-   var sess = req.session;
-   var name = "";
-   
-   if(sess.name){
-    name = sess.name
-   }
-   else{
-    sess.name = "initialize";
-   }
-
-  res.send('<div style="color:red;font-size:30;">'+sess.name+'</div>'+'<div><a href="/">back</a></div>');
+  res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
 });
 
 app.use(router);
@@ -52,7 +42,10 @@ mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
   app.use(cookieParser);
 
     app.use(session({
-        cookie: { maxAge: 1000*60*2 } , // 2 Minuten
+        cookie: {
+                path    : '/',
+                maxAge: 1000*60*2 // 2 Minuten
+            }, 
         secret: "session secret" ,
         resave: true,
         saveUninitialized: true,
