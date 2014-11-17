@@ -17,11 +17,11 @@ var io = require('socket.io')(http);
 
 app.use(express.static(__dirname + '/public'));
 
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }))
 // app.use(express.static('public'));
 // app.use(cookieParser);
-app.use(bodyParser);
+// app.use(bodyParser);
 // app.use(session({ secret: '!mast3rOfDes4st3r!' }));
 
 
@@ -31,8 +31,8 @@ var router = express.Router();
 
 router.get('/', function(req, res){
     console.log('hello world');
-    // res.render('index',{});
-    res.json({ message: 'hooray! welcome to our api!' });
+    res.render('index',{});
+    // res.json({ message: 'hooray! welcome to our api!' });
 	// db.query('SELECT * FROM message', function(err, rows){
 		// if(err)
            // console.log("Error Selecting : %s ",err );
