@@ -43,7 +43,7 @@ mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
 
     var sessionStore = new MongoStore({ mongoose_connection: mongoose.connection });
 
-    app.use(cookieParser);
+    app.use(cookieParser('session secret'));
 
     app.use(session({
         cookie: {
