@@ -1,15 +1,33 @@
 #!/bin/env node
 
 var express = require('express');
-var app = express();
-// var cookieParser = require('cookie-parser');
+
 var bodyParser = require('body-parser');
-// var session    = require('express-session');
-// var mongoStore = require('connect-mongo')(session);
+var cookieParser = require('cookie-parser');
+var session      = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+
+var app = express();
 
 var http = require('http').Server(app);
-// var mysql = require('mysql');
 var io = require('socket.io')(http); 
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(session({
+    cookie: { maxAge: 1000*60*2 } , // 2 Minuten
+    secret: "session secret" ,
+    store:new MongoStore({
+            db: 'express',
+            host: OPENSHIFT_MONGODB_DB_HOST,
+            port: OPENSHIFT_MONGODB_DB_PORT,  
+            username: OPENSHIFT_MONGODB_DB_USERNAME,
+            password: OPENSHIFT_MONGODB_DB_PASSWORD, 
+            collection: 'session', 
+            auto_reconnect:true
+    })
+}));
 
 // var passport = require('passport')
   // , FacebookStrategy = require('passport-facebook').Strategy;
@@ -17,9 +35,8 @@ var io = require('socket.io')(http);
 
 app.use(express.static(__dirname + '/public'));
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.urlencoded({ extended: false }))
-// app.use(express.static('public'));
+
+app.use(express.static('public'));
 // app.use(cookieParser);
 // app.use(bodyParser);
 // app.use(session({ secret: '!mast3rOfDes4st3r!' }));
@@ -29,9 +46,22 @@ app.set('view engine', 'ejs');
 
 var router = express.Router(); 	
 
-router.get('/', function(req, res){
-    console.log('hello world');
-    res.render('index',{});
+app.get('/', function(req, res){
+  // res.sendfile('./index.html');
+  res.render('index',{});
+});
+app.post('/',function(req,res){
+  req.session.name=req.body.name;
+  res.redirect('/info');
+});
+app.get('/info',function(req,res){
+  res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
+});
+
+
+// router.get('/', function(req, res){
+    // console.log('hello world');
+    // res.render('index',{});
     // res.json({ message: 'hooray! welcome to our api!' });
 	// db.query('SELECT * FROM message', function(err, rows){
 		// if(err)
@@ -42,9 +72,9 @@ router.get('/', function(req, res){
 	
 	// });
 
-});
+// });
 
-app.use('/', router);
+// app.use('/', router);
 
 // app.use(passport.initialize());
 // app.use(passport.session({
