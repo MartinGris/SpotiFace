@@ -43,42 +43,47 @@ app.set('view engine', 'ejs');
 
 
 
-passport.serializeUser(function(user, done) {
-  done(null, user.id);
-});
+// passport.serializeUser(function(user, done) {
+  // done(null, user.id);
+// });
 
-passport.deserializeUser(function(id, done) {
-  User.findById(id, function(err, user) {
-    done(err, user);
-  });
-});  
+// passport.deserializeUser(function(id, done) {
+  // User.findById(id, function(err, user) {
+    // done(err, user);
+  // });
+// });  
   
   
-passport.use(new FacebookStrategy({
-    clientID: '656991001080494',
-    clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
-    callbackURL: "http://spotiface-grisard.rhcloud.com/spoti"
-  },
-  function(accessToken, refreshToken, profile, done) {
-    console.log(accessToken);
+// passport.use(new FacebookStrategy({
+    // clientID: '656991001080494',
+    // clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
+    // callbackURL: "http://spotiface-grisard.rhcloud.com/spoti"
+  // },
+  // function(accessToken, refreshToken, profile, done) {
+    // console.log(accessToken);
   
-    User.findOrCreate({ facebookId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
-  }
-));
+    // User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+      // return done(err, user);
+    // });
+  // }
+// ));
+
+
 // Redirect the user to Facebook for authentication.  When complete,
 // Facebook will redirect the user back to the application at
 //     /auth/facebook/callback
-app.get('/auth/facebook', passport.authenticate('facebook'));
+
+// app.get('/auth/facebook', passport.authenticate('facebook'));
 
 // Facebook will redirect the user to this URL after approval.  Finish the
 // authentication process by attempting to obtain an access token.  If
 // access was granted, the user will be logged in.  Otherwise,
 // authentication has failed.
-app.get('/auth/facebook/callback', 
-  passport.authenticate('facebook', { successRedirect: '/',
-                                      failureRedirect: "http://spotiface-grisard.rhcloud.com" }));
+
+
+// app.get('/auth/facebook/callback', 
+  // passport.authenticate('facebook', { successRedirect: '/',
+                                      // failureRedirect: "http://spotiface-grisard.rhcloud.com" }));
 
 
 app.get('/', function(req, res){
@@ -96,18 +101,18 @@ app.get('/', function(req, res){
 
 });
 
-app.get('/spoti', ensureAuthenticated, function(req, res){
-    console.log('spoti');
+// app.get('/spoti', ensureAuthenticated, function(req, res){
+    // console.log('spoti');
    
-    User.findById(req.session.passport.user, function(err, user) {
-        if(err) {
-            console.log(err);
-        } else {
-        	res.render('spoti', { user: user});
-            // res.render('account', { user: user});
-        }
-	});
-});
+    // User.findById(req.session.passport.user, function(err, user) {
+        // if(err) {
+            // console.log(err);
+        // } else {
+        	// res.render('spoti', { user: user});
+            res.render('account', { user: user});
+        // }
+	// });
+// });
 
 io.on('connection', function(socket){
 	console.log('a user connected');
