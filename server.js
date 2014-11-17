@@ -29,8 +29,7 @@ mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
         cookie: { maxAge: 1000*60*2 } , // 2 Minuten
         secret: "session secret" ,
         resave: true,
-        saveUninitialized: true,
-        store: sessionStore
+        saveUninitialized: true
     }));
 
   start();
