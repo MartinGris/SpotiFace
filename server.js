@@ -1,30 +1,33 @@
 #!/bin/env node
 
 var express = require('express');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session    = require('express-session');
-// var mongoStore = require('connect-mongo')(session);
 var app = express();
+// var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+// var session    = require('express-session');
+// var mongoStore = require('connect-mongo')(session);
+
 var http = require('http').Server(app);
 // var mysql = require('mysql');
 var io = require('socket.io')(http); 
 
-var passport = require('passport')
-  , FacebookStrategy = require('passport-facebook').Strategy;
+// var passport = require('passport')
+  // , FacebookStrategy = require('passport-facebook').Strategy;
 
 
 app.use(express.static(__dirname + '/public'));
 
 // app.use(express.static('public'));
-app.use(cookieParser);
+// app.use(cookieParser);
 app.use(bodyParser);
-app.use(session({ secret: '!mast3rOfDes4st3r!' }));
+// app.use(session({ secret: '!mast3rOfDes4st3r!' }));
 
 
 app.set('view engine', 'ejs');
 
-app.get('/', function(req, res){
+var router = express.Router(); 	
+
+router.get('/', function(req, res){
     console.log('hello world');
     res.render('index',{});
     
@@ -39,11 +42,13 @@ app.get('/', function(req, res){
 
 });
 
-app.use(passport.initialize());
-app.use(passport.session({
-    resave: true,
-    saveUninitialized: true
-}));
+app.use('/', router);
+
+// app.use(passport.initialize());
+// app.use(passport.session({
+    // resave: true,
+    // saveUninitialized: true
+// }));
 
 
 // var db = mysql.createConnection(
