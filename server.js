@@ -109,7 +109,7 @@ app.get('/', function(req, res){
             // console.log(err);
         // } else {
         	// res.render('spoti', { user: user});
-            res.render('account', { user: user});
+            
         // }
 	// });
 // });
