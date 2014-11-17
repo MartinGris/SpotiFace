@@ -20,6 +20,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
+var router = express.Router(); 	
+
+router.get('/', function(req, res){
+  res.sendFile('./index2.html');
+  // res.render('index',{});
+});
+router.post('/',function(req,res){
+  req.session.name=req.body.name;
+  res.redirect('/info');
+});
+router.get('/info',function(req,res){
+  res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
+});
 
 mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
   // If error connecting
@@ -39,19 +52,7 @@ mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
         saveUninitialized: true,
         store: sessionStore
     }));
-    var router = express.Router(); 	
 
-    router.get('/', function(req, res){
-      res.sendFile('./index2.html');
-      // res.render('index',{});
-    });
-    router.post('/',function(req,res){
-      req.session.name=req.body.name;
-      res.redirect('/info');
-    });
-    router.get('/info',function(req,res){
-      res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
-    });
 
     app.use(router);
     
