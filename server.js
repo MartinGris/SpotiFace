@@ -1,67 +1,121 @@
 #!/bin/env node
 
-var express = require('express');
-
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session      = require('express-session');
+var settings = require('./settings')
+var express = require('express')
+var session = require('express-session')
+var app = express()
 var MongoStore = require('connect-mongo')(session);
 
-var mongoose = require('mongoose');
+var links = '<p><a href="/link1">Link1</a> <a href="/link2">Link2</a> <a href="/link3">Link3</a></p>';
+// var express = require('express');
 
-var app = express();
+// var bodyParser = require('body-parser');
+// var cookieParser = require('cookie-parser');
+// var session      = require('express-session');
+// var MongoStore = require('connect-mongo')(session);
 
-var http = require('http').Server(app);
+app.use(session({
+    secret: "some secret key",
+    saveUninitialized: true, // (default: true)
+    resave: true, // (default: true)
+    store: new MongoStore({
+      db : settings.mongo.db,
+    })
+  }));
+  
+  app.get('/link1', function(req, res) {
+  // Simply add some links to each path
+  var output = links;
+  req.session.lastPage += req.route.path + '<br>';
+  if(req.session.lastPage) {
+    output += '<h2>'+req.route.path+'</h2> past page was: ' + req.session.lastPage + '. ';
+  } else{
+    output += 'No last page defined';
+  }
+  res.send(output);
+});
+ 
+app.get('/link2', function(req, res) {
+  // Simply add some links to each path
+  var output = links;
+  req.session.lastPage += req.route.path + '<br>';
+  if(req.session.lastPage) {
+    output += '<h2>You`\ve made it to link 2</h2> past page was: ' + req.session.lastPage + '. ';
+  } else{
+    output += 'No last page defined';
+  }
+  res.send(output);
+});
+ 
+app.get('/link3', function(req, res) {
+  // Simply add some links to each path
+  var output = links;
+  req.session.lastPage += req.route.path + '<br>';
+  if(req.session.lastPage) {
+    output += '<h3>Some other title for Link3</h3> past page was: ' + req.session.lastPage + '. ';
+  } else{
+    output += 'No last page defined';
+  }
+  res.send(output);
+});
+
+// var mongoose = require('mongoose');
+
+// var app = express();
+
+// var http = require('http').Server(app);
 var io = require('socket.io')(http); 
 
-app.use(bodyParser.urlencoded({ extended: true }));
+start();
+
+// app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
-app.use(express.static(__dirname + '/public'));
-app.set('view engine', 'ejs');
+// app.use(express.static(__dirname + '/public'));
+// app.set('view engine', 'ejs');
 
-var router = express.Router(); 	
+// var router = express.Router(); 	
 
-router.get('/', function(req, res){
-  res.sendFile(__dirname + '/index2.html');
+// router.get('/', function(req, res){
+  // res.sendFile(__dirname + '/index2.html');
   // res.render('index',{});
-});
-router.post('/',function(req,res){
-    console.log("------------------>session: " + req.session);
-    req.session.name=req.body.name;
-    res.redirect('/info');
-});
-router.get('/info',function(req,res){
-  res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
-});
+// });
+// router.post('/',function(req,res){
+    // console.log("------------------>session: " + req.session);
+    // req.session.name=req.body.name;
+    // res.redirect('/info');
+// });
+// router.get('/info',function(req,res){
+  // res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
+// });
 
-app.use('/index', router);
+// app.use('/index', router);
 
-mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
+// mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
     // If error connecting
-    if(e) throw e;
+    // if(e) throw e;
 
-    var sessionStore = new MongoStore({ mongoose_connection: mongoose.connection });
+    // var sessionStore = new MongoStore({ mongoose_connection: mongoose.connection });
 
-    app.use(cookieParser('session secret'));
+    // app.use(cookieParser('session secret'));
 
-    app.use(session({
-        cookie: {
-                path    : '/',
-                maxAge: 1000*60*2 // 2 Minuten
-            }, 
-        secret: "session secret" ,
-        resave: false,
-        saveUninitialized: true,
-        store: sessionStore
-    }));
-
-    
+    // app.use(session({
+        // cookie: {
+                // path    : '/',
+                // maxAge: 1000*60*2 // 2 Minuten
+            // }, 
+        // secret: "session secret" ,
+        // resave: false,
+        // saveUninitialized: true,
+        // store: sessionStore
+    // }));
 
     
+
     
-  start();
-});
+    
+  // start();
+// });
 
 
 // var sessionStore = new MongoStore({
@@ -238,7 +292,7 @@ function start(){
     }
 
 
-    http.listen(port, ipaddress, function(){
+    app.listen(port, ipaddress, function(){
       console.log('listening on :' + port );
     });
 
