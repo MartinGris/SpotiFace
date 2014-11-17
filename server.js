@@ -17,6 +17,8 @@ var io = require('socket.io')(http);
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
+app.use(express.static(__dirname + '/public'));
+app.set('view engine', 'ejs');
 
 
 mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
@@ -88,16 +90,15 @@ mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
   // , FacebookStrategy = require('passport-facebook').Strategy;
 
 
-app.use(express.static(__dirname + '/public'));
 
 
-app.use(express.static('public'));
+// app.use(express.static('public'));
 // app.use(cookieParser);
 // app.use(bodyParser);
 // app.use(session({ secret: '!mast3rOfDes4st3r!' }));
 
 
-app.set('view engine', 'ejs');
+
 
 
 
