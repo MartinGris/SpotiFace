@@ -20,17 +20,31 @@ app.use(express.static(__dirname + '/public'));
 app.use(cookieParser);
 app.use(bodyParser);
 app.use(session({ secret: '!mast3rOfDes4st3r!' }));
+
+
+app.set('view engine', 'ejs');
+
+app.get('/', function(req, res){
+    console.log('hello world');
+    res.render('index',{});
+    
+	// db.query('SELECT * FROM message', function(err, rows){
+		// if(err)
+           // console.log("Error Selecting : %s ",err );
+		     
+        // console.log(rows);
+		// res.render('index',{data:rows});
+	
+	// });
+
+});
+
 app.use(passport.initialize());
 app.use(passport.session({
     resave: true,
     saveUninitialized: true
 }));
-app.use(app.router);
 
-
-
-
-app.set('view engine', 'ejs');
 
 // var db = mysql.createConnection(
     // {
@@ -90,20 +104,7 @@ app.set('view engine', 'ejs');
                                       // failureRedirect: "http://spotiface-grisard.rhcloud.com" }));
 
 
-app.get('/', function(req, res){
-    console.log('hello world');
-    res.render('index',{});
-    
-	// db.query('SELECT * FROM message', function(err, rows){
-		// if(err)
-           // console.log("Error Selecting : %s ",err );
-		     
-        // console.log(rows);
-		// res.render('index',{data:rows});
-	
-	// });
 
-});
 
 // app.get('/spoti', ensureAuthenticated, function(req, res){
     // console.log('spoti');
