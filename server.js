@@ -20,7 +20,10 @@ app.use(cookieParser);
 app.use(bodyParser);
 app.use(session({ secret: '!mast3rOfDes4st3r!' }));
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session({
+    resave: true,
+    saveUninitialized: true
+}));
 // app.use(app.router);
 
 
