@@ -17,7 +17,31 @@ var io = require('socket.io')(http);
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
-app.use(app.router);
+var router = express.Router(); 	
+
+router.get('/', function(req, res){
+  res.sendfile('./index2.html');
+  // res.render('index',{});
+});
+router.post('/',function(req,res){
+  req.session.name=req.body.name;
+  res.redirect('/info');
+});
+router.get('/info',function(req,res){
+   var sess = req.session;
+   var name = "";
+   
+   if(sess.name){
+    name = sess.name
+   }
+   else{
+    sess.name = "initialize";
+   }
+
+  res.send('<div style="color:red;font-size:30;">'+sess.name+'</div>'+'<div><a href="/">back</a></div>');
+});
+
+app.use(router);
 
 mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
   // If error connecting
@@ -80,29 +104,6 @@ app.use(express.static('public'));
 
 app.set('view engine', 'ejs');
 
-// var router = express.Router(); 	
-
-app.get('/', function(req, res){
-  res.sendfile('./index2.html');
-  // res.render('index',{});
-});
-app.post('/',function(req,res){
-  req.session.name=req.body.name;
-  res.redirect('/info');
-});
-app.get('/info',function(req,res){
-   var sess = req.session;
-   var name = "";
-   
-   if(sess.name){
-    name = sess.name
-   }
-   else{
-    sess.name = "initialize";
-   }
-
-  res.send('<div style="color:red;font-size:30;">'+sess.name+'</div>'+'<div><a href="/">back</a></div>');
-});
 
 
 // router.get('/', function(req, res){
