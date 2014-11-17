@@ -3,7 +3,8 @@
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var session = require('express-session');
+var session    = require('express-session');
+// var mongoStore = require('connect-mongo')(session);
 var app = express();
 var http = require('http').Server(app);
 // var mysql = require('mysql');
@@ -24,7 +25,7 @@ app.use(passport.session({
     resave: true,
     saveUninitialized: true
 }));
-// app.use(app.router);
+app.use(app.router);
 
 
 
