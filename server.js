@@ -89,7 +89,17 @@ app.post('/',function(req,res){
   res.redirect('/info');
 });
 app.get('/info',function(req,res){
-  res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
+   var sess = req.session;
+   var name = "";
+   
+   if(sess.name){
+    name = sess.name
+   }
+   else{
+    sess.name = "initialize";
+   }
+
+  res.send('<div style="color:red;font-size:30;">'+sess.name+'</div>'+'<div><a href="/">back</a></div>');
 });
 
 
