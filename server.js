@@ -63,7 +63,7 @@ app.get('/link3', function(req, res) {
 
 // var app = express();
 
-var http = require('http').Server(app);
+// var http = require('http').Server(app);
 var io = require('socket.io')(http); 
 
 start();
@@ -292,7 +292,7 @@ function start(){
     }
 
 
-    http.listen(port, ipaddress, function(){
+    app.listen(port, ipaddress, function(){
       console.log('listening on :' + port );
     });
 
