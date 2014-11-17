@@ -13,23 +13,33 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http); 
 
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+// app.use(cookieParser());
 
-app.use(session({
-    cookie: { maxAge: 1000*60*2 } , // 2 Minuten
-    secret: "session secret" ,
-    resave: true,
-    saveUninitialized: true,
-    store:new MongoStore({
-            db: 'express',
-            host: process.env.OPENSHIFT_MONGODB_DB_HOST,
-            port: process.env.OPENSHIFT_MONGODB_DB_PORT,  
-            username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
-            password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD, 
-            collection: 'session', 
-            auto_reconnect:true
-    })
+var sessionStore = new MongoStore({
+                db: 'express',
+                host: process.env.OPENSHIFT_MONGODB_DB_HOST,
+                port: process.env.OPENSHIFT_MONGODB_DB_PORT,  
+                username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
+                password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD, 
+                collection: 'session', 
+                auto_reconnect:true
+            }, function(e) {
+
+  app.use(cookieParser);
+
+    app.use(session({
+        cookie: { maxAge: 1000*60*2 } , // 2 Minuten
+        secret: "session secret" ,
+        resave: true,
+        saveUninitialized: true,
+        store: sessionStore
 }));
+
+  start();
+});
+
+
+
 
 // var passport = require('passport')
   // , FacebookStrategy = require('passport-facebook').Strategy;
@@ -49,8 +59,8 @@ app.set('view engine', 'ejs');
 var router = express.Router(); 	
 
 app.get('/', function(req, res){
-  // res.sendfile('./index.html');
-  res.render('index',{});
+  res.sendfile('./index2.html');
+  // res.render('index',{});
 });
 app.post('/',function(req,res){
   req.session.name=req.body.name;
@@ -181,20 +191,25 @@ io.on('connection', function(socket){
   	});
 });
 
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-var port      = process.env.OPENSHIFT_NODEJS_PORT;
+function start(){
+    var ipaddress = process.env.OPENSHIFT_NODEJS_IP;
+    var port      = process.env.OPENSHIFT_NODEJS_PORT;
 
-if (typeof ipaddress === "undefined") {
-    //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
-    //  allows us to run/test the app locally.
-    console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
-    ipaddress = "127.0.0.1";
+    if (typeof ipaddress === "undefined") {
+        //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
+        //  allows us to run/test the app locally.
+        console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
+        ipaddress = "127.0.0.1";
+    }
+
+
+    http.listen(port, ipaddress, function(){
+      console.log('listening on :' + port );
+    });
+
 }
 
 
-http.listen(port, ipaddress, function(){
-  console.log('listening on :' + port );
-});
 
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()){
