@@ -27,8 +27,9 @@ router.get('/', function(req, res){
   // res.render('index',{});
 });
 router.post('/',function(req,res){
-  req.session.name=req.body.name;
-  res.redirect('/info');
+    console.log("------------------>session: " + req.session);
+    req.session.name=req.body.name;
+    res.redirect('/info');
 });
 router.get('/info',function(req,res){
   res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
