@@ -20,10 +20,10 @@ app.use(session({
     secret: "session secret" ,
     store:new MongoStore({
             db: 'express',
-            host: OPENSHIFT_MONGODB_DB_HOST,
-            port: OPENSHIFT_MONGODB_DB_PORT,  
-            username: OPENSHIFT_MONGODB_DB_USERNAME,
-            password: OPENSHIFT_MONGODB_DB_PASSWORD, 
+            host: process.env.OPENSHIFT_MONGODB_DB_HOST,
+            port: process.env.OPENSHIFT_MONGODB_DB_PORT,  
+            username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
+            password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD, 
             collection: 'session', 
             auto_reconnect:true
     })
