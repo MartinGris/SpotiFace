@@ -17,6 +17,8 @@ var io = require('socket.io')(http);
 app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
+app.use(app.router);
+
 mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
   // If error connecting
   if(e) throw e;
@@ -29,7 +31,8 @@ mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
         cookie: { maxAge: 1000*60*2 } , // 2 Minuten
         secret: "session secret" ,
         resave: true,
-        saveUninitialized: true
+        saveUninitialized: true,
+        store: sessionStore
     }));
 
   start();
@@ -77,7 +80,7 @@ app.use(express.static('public'));
 
 app.set('view engine', 'ejs');
 
-var router = express.Router(); 	
+// var router = express.Router(); 	
 
 app.get('/', function(req, res){
   res.sendfile('./index2.html');
