@@ -79,13 +79,17 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook', {
 }));
  
 app.get('/success', ensureAuthenticated, function(req, res, next) {
-  res.send('Successfully logged in.');
+  res.send('Successfully logged in. <a href="/logout"> LOGOUT </a>');
 });
  
 app.get('/error', function(req, res, next) {
   res.send("Error logging in.");
 });
 
+app.get('/logout', function(req, res, next) {
+  req.logout();
+  res.redirect('/');
+});
 // app.get('/spoti', ensureAuthenticated, function(req, res){
 app.get('/spoti', function(req, res){
     console.log('spoti');
