@@ -13,6 +13,8 @@ var express = require('express');
 var bodyParser = require('body-parser'); // for reading POSTed form data into `req.body`
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
+var passport = require('passport')
+  , FacebookStrategy = require('passport-facebook').Strategy;
 
 var app = express();
 
@@ -24,6 +26,9 @@ app.use(expressSession({secret:'somesecrettokenhere',
                             maxAge: 1000*60*2 // 2 Minuten
                         }
                         }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -38,104 +43,62 @@ var io = require('socket.io')(http);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
-app.get('/', function(req, res){
-  var html = '<form action="/" method="post">' +
-             'Your name: <input type="text" name="userName"><br>' +
-             '<button type="submit">Submit</button>' +
-             '</form>';
-  if (req.session.userName) {
-    html += '<br>Your username from your session is: ' + req.session.userName;
+passport.use(new FacebookStrategy({
+    clientID: '656991001080494',
+    clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
+    callbackURL: "http://spotiface-grisard.rhcloud.com/spoti"
+  },
+  function(accessToken, refreshToken, profile, done) {
+    console.log(accessToken);
+  
+    User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
   }
-  res.send(html);
+));
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
 });
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
+
+
+app.get('/', function(req, res){
+  res.render('index',{});
+});
+
+app.get('/auth/facebook', passport.authenticate('facebook'));
 
 app.post('/', function(req, res){
   req.session.userName = req.body.userName;
   res.redirect('/');
 });
 
+// app.get('/spoti', ensureAuthenticated, function(req, res){
+app.get('/spoti', function(req, res){
+    console.log('spoti');
+   
+    User.findById(req.session.passport.user, function(err, user) {
+        if(err) {
+            console.log(err);
+        } else {
+        	res.render('spoti', { userID: user});
+            
+        }
+	});
+});
+
 start();
 
-// var router = express.Router(); 	
-
-// router.get('/', function(req, res){
-  // res.sendFile(__dirname + '/index2.html');
-  // res.render('index',{});
-// });
-// router.post('/',function(req,res){
-    // console.log("------------------>session: " + req.session);
-    // req.session.name=req.body.name;
-    // res.redirect('/info');
-// });
-// router.get('/info',function(req,res){
-  // res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
-// });
-
-// app.use('/index', router);
-
-// mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
-    // If error connecting
-    // if(e) throw e;
-
-    // var sessionStore = new MongoStore({ mongoose_connection: mongoose.connection });
-
-    // app.use(cookieParser('session secret'));
-
-    // app.use(session({
-        // cookie: {
-                // path    : '/',
-                // maxAge: 1000*60*2 // 2 Minuten
-            // }, 
-        // secret: "session secret" ,
-        // resave: false,
-        // saveUninitialized: true,
-        // store: sessionStore
-    // }));
-
-    
-
-    
-    
-  // start();
-// });
-
-
-// var sessionStore = new MongoStore({
-                // db: 'express',
-                // host: process.env.OPENSHIFT_MONGODB_DB_HOST,
-                // port: process.env.OPENSHIFT_MONGODB_DB_PORT,  
-                // username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
-                // password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD, 
-                // collection: 'session', 
-                // auto_reconnect:true
-            // }, function(e) {
-
-  // app.use(cookieParser);
-
-    // app.use(session({
-        // cookie: { maxAge: 1000*60*2 } , // 2 Minuten
-        // secret: "session secret" ,
-        // resave: true,
-        // saveUninitialized: true,
-        // store: sessionStore
-    // }));
-
-  // start();
-// });
 
 
 
 
-// var passport = require('passport')
-  // , FacebookStrategy = require('passport-facebook').Strategy;
-
-
-
-
-// app.use(express.static('public'));
-// app.use(cookieParser);
-// app.use(bodyParser);
-// app.use(session({ secret: '!mast3rOfDes4st3r!' }));
 
 
 
