@@ -18,15 +18,7 @@ var passport = require('passport')
 
 var app = express();
 
-// must use cookieParser before expressSession
-app.use(cookieParser('Mast3rOfD3sast3r'));
 
-app.use(expressSession({secret:'Mast3rOfD3sast3r'}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
@@ -46,10 +38,15 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     console.log(accessToken);
+    
+    function(accessToken, refreshToken, profile, done) {
+     process.nextTick(function () {
+       return done(null, profile);
+     });
   
-    User.findOrCreate({ facebookId: profile.id }, function (err, user) {
-      return done(err, user);
-    });
+    // User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+      // return done(err, user);
+    // });
   }
 ));
 
@@ -63,6 +60,15 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
+// must use cookieParser before expressSession
+app.use(cookieParser('Mast3rOfD3sast3r'));
+
+app.use(expressSession({secret:'Mast3rOfD3sast3r'}));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.get('/', function(req, res){
   res.render('index',{});
@@ -79,14 +85,14 @@ app.post('/', function(req, res){
 app.get('/spoti', function(req, res){
     console.log('spoti');
    
-    User.findById(req.session.passport.user, function(err, user) {
-        if(err) {
-            console.log(err);
-        } else {
-        	res.render('spoti', { userID: user});
+    // User.findById(req.session.passport.user, function(err, user) {
+        // if(err) {
+            // console.log(err);
+        // } else {
+        	// res.render('spoti', { userID: user});
             
-        }
-	});
+        // }
+	// });
 });
 
 start();
