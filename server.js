@@ -10,9 +10,8 @@
 // var mongoose = require('mongoose');
 
 var express = require('express');
-var http = require('http');
 var path = require('path');
-// var http = require('http').Server(app);
+var http = require('http').Server(app);
 var bodyParser = require('body-parser'); // for reading POSTed form data into `req.body`
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
