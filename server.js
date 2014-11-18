@@ -28,7 +28,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(express.methodOverride());
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(app.router);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
