@@ -1,67 +1,99 @@
 #!/bin/env node
 
+// var express = require('express');
+
+// var bodyParser = require('body-parser');
+// var cookieParser = require('cookie-parser');
+// var session      = require('express-session');
+// var MongoStore = require('connect-mongo')(session);
+
+// var mongoose = require('mongoose');
+
 var express = require('express');
-
-var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
-var session      = require('express-session');
-var MongoStore = require('connect-mongo')(session);
-
-var mongoose = require('mongoose');
+var bodyParser = require('body-parser'); // for reading POSTed form data into `req.body`
+var expressSession = require('express-session');
+var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
 
 var app = express();
+
+// must use cookieParser before expressSession
+app.use(cookieParser());
+
+app.use(expressSession({secret:'somesecrettokenhere'}));
+
+app.use(bodyParser());
+
+
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http); 
 
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(cookieParser());
 
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
-var router = express.Router(); 	
+app.get('/', function(req, res){
+  var html = '<form action="/" method="post">' +
+             'Your name: <input type="text" name="userName"><br>' +
+             '<button type="submit">Submit</button>' +
+             '</form>';
+  if (req.session.userName) {
+    html += '<br>Your username from your session is: ' + req.session.userName;
+  }
+  res.send(html);
+});
 
-router.get('/', function(req, res){
-  res.sendFile(__dirname + '/index2.html');
+app.post('/', function(req, res){
+  req.session.userName = req.body.userName;
+  res.redirect('/');
+});
+
+start();
+
+// var router = express.Router(); 	
+
+// router.get('/', function(req, res){
+  // res.sendFile(__dirname + '/index2.html');
   // res.render('index',{});
-});
-router.post('/',function(req,res){
-    console.log("------------------>session: " + req.session);
-    req.session.name=req.body.name;
-    res.redirect('/info');
-});
-router.get('/info',function(req,res){
-  res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
-});
+// });
+// router.post('/',function(req,res){
+    // console.log("------------------>session: " + req.session);
+    // req.session.name=req.body.name;
+    // res.redirect('/info');
+// });
+// router.get('/info',function(req,res){
+  // res.send('<div style="color:red;font-size:30;">'+req.session.name+'</div>'+'<div><a href="/">back</a></div>');
+// });
 
-app.use('/index', router);
+// app.use('/index', router);
 
-mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
+// mongoose.connect(process.env.OPENSHIFT_MONGODB_DB_URL, function(e) {
     // If error connecting
-    if(e) throw e;
+    // if(e) throw e;
 
-    var sessionStore = new MongoStore({ mongoose_connection: mongoose.connection });
+    // var sessionStore = new MongoStore({ mongoose_connection: mongoose.connection });
 
-    app.use(cookieParser('session secret'));
+    // app.use(cookieParser('session secret'));
 
-    app.use(session({
-        cookie: {
-                path    : '/',
-                maxAge: 1000*60*2 // 2 Minuten
-            }, 
-        secret: "session secret" ,
-        resave: false,
-        saveUninitialized: true,
-        store: sessionStore
-    }));
-
-    
+    // app.use(session({
+        // cookie: {
+                // path    : '/',
+                // maxAge: 1000*60*2 // 2 Minuten
+            // }, 
+        // secret: "session secret" ,
+        // resave: false,
+        // saveUninitialized: true,
+        // store: sessionStore
+    // }));
 
     
+
     
-  start();
-});
+    
+  // start();
+// });
 
 
 // var sessionStore = new MongoStore({
