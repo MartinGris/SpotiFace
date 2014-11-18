@@ -13,30 +13,16 @@ var express = require('express');
 var bodyParser = require('body-parser'); // for reading POSTed form data into `req.body`
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
-var MongoStore = require('connect-mongo')(session);
 
 var app = express();
 
-app.use(bodyParser());
 // must use cookieParser before expressSession
 app.use(cookieParser());
 
-// app.use(expressSession({secret:'somesecrettokenhere'}));
+app.use(expressSession({secret:'somesecrettokenhere'}));
 
+app.use(bodyParser());
 
-app.use(expressSession({
-    cookie: { maxAge: 1000*60*2 } ,
-    secret: "session secret" ,
-    store:new MongoStore({
-            db: 'express',
-            host: process.env.OPENSHIFT_MONGODB_DB_HOST,
-            port: process.env.OPENSHIFT_MONGODB_DB_PORT,  
-            username: process.env.OPENSHIFT_MONGODB_DB_USERNAME,
-            password: process.env.OPENSHIFT_MONGODB_DB_PASSWORD, 
-            collection: 'session', 
-            auto_reconnect:true
-    })
-}));
 
 
 var http = require('http').Server(app);
