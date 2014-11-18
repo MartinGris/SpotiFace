@@ -25,7 +25,7 @@ app.use(expressSession({secret:'somesecrettokenhere',
                         }
                         }));
 
-app.use(bodyParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 
 
