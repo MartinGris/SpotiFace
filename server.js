@@ -80,8 +80,8 @@ app.post('/', function(req, res){
   res.redirect('/');
 });
 
-app.get('/spoti', ensureAuthenticated, function(req, res){
-// app.get('/spoti', function(req, res){
+// app.get('/spoti', ensureAuthenticated, function(req, res){
+app.get('/spoti', function(req, res){
     console.log('spoti');
     res.render('spoti', {});
    
