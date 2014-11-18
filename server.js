@@ -42,7 +42,7 @@ app.set('view engine', 'ejs');
 passport.use(new FacebookStrategy({
     clientID: '656991001080494',
     clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
-    callbackURL: "http://spotiface-grisard.rhcloud.com/spoti"
+    callbackURL: "http://spotiface-grisard.rhcloud.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     console.log(accessToken);
@@ -75,18 +75,24 @@ app.post('/', function(req, res){
   res.redirect('/');
 });
 
+app.get('/auth/facebook/callback', passport.authenticate('facebook', {
+  successRedirect: '/success',
+  failureRedirect: '/error'
+}));
+ 
+app.get('/success', function(req, res, next) {
+  res.send('Successfully logged in.');
+});
+ 
+app.get('/error', function(req, res, next) {
+  res.send("Error logging in.");
+});
+
 // app.get('/spoti', ensureAuthenticated, function(req, res){
 app.get('/spoti', function(req, res){
     console.log('spoti');
-   
-    User.findById(req.session.passport.user, function(err, user) {
-        if(err) {
-            console.log(err);
-        } else {
-        	res.render('spoti', { userID: user});
-            
-        }
-	});
+    res.render('spoti');
+
 });
 
 start();
