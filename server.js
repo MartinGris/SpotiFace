@@ -78,7 +78,7 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook', {
   failureRedirect: '/error'
 }));
  
-app.get('/success', function(req, res, next) {
+app.get('/success', ensureAuthenticated, function(req, res, next) {
   res.send('Successfully logged in.');
 });
  
