@@ -21,11 +21,11 @@ var passport = require('passport')
 
 var app = express();
 
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded());
-app.use(express.methodOverride());
+// app.use(express.favicon());
+// app.use(express.logger('dev'));
+// app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(express.methodOverride());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(app.router);
