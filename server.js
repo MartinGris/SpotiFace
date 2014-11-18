@@ -19,13 +19,9 @@ var passport = require('passport')
 var app = express();
 
 // must use cookieParser before expressSession
-app.use(cookieParser());
+app.use(cookieParser('Mast3rOfD3sast3r'));
 
-app.use(expressSession({secret:'somesecrettokenhere',
-                        cookie: {
-                            maxAge: 1000*60*2 // 2 Minuten
-                        }
-                        }));
+app.use(expressSession({secret:'Mast3rOfD3sast3r'}));
 
 app.use(passport.initialize());
 app.use(passport.session());
