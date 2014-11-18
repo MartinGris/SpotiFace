@@ -10,8 +10,6 @@
 // var mongoose = require('mongoose');
 
 var express = require('express');
-var path = require('path');
-var http = require('http').Server(app);
 var bodyParser = require('body-parser'); // for reading POSTed form data into `req.body`
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
@@ -20,32 +18,38 @@ var passport = require('passport')
 
 var app = express();
 
-// app.use(express.favicon());
-// app.use(express.logger('dev'));
-// app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(express.methodOverride());
+// must use cookieParser before expressSession
+app.use(cookieParser('Mast3rOfD3sast3r'));
+
+app.use(expressSession({secret:'Mast3rOfD3sast3r'}));
+
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
+var http = require('http').Server(app);
+var io = require('socket.io')(http); 
+
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(cookieParser());
+
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
 passport.use(new FacebookStrategy({
     clientID: '656991001080494',
     clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
-    callbackURL: "http://spotiface-grisard.rhcloud.com/auth/facebook/callback"
+    callbackURL: "http://spotiface-grisard.rhcloud.com/spoti"
   },
   function(accessToken, refreshToken, profile, done) {
     console.log(accessToken);
-    process.nextTick(function() {
-        //Assuming user exists
-        done(null, profile);
-    });
-
   
-    // User.findOrCreate({ facebookId: profile.id }, function (err, user) {
-      // return done(err, user);
-    // });
+    User.findOrCreate({ facebookId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
   }
 ));
 
@@ -59,63 +63,30 @@ passport.deserializeUser(function(id, done) {
   });
 });
 
-app.get('/auth/facebook', passport.authenticate('facebook'));
-
-app.get('/auth/facebook/callback', passport.authenticate('facebook', {
-  successRedirect: '/success',
-  failureRedirect: '/error'
-}));
-
-app.get('/success', function(req, res, next) {
-  res.send('Successfully logged in.');
-});
- 
-app.get('/error', function(req, res, next) {
-  res.send("Error logging in.");
-});
-
-
-
-
-
-var io = require('socket.io')(http); 
-
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(cookieParser());
-
-
-
-
-
-
-
-// must use cookieParser before expressSession
-// app.use(cookieParser('Mast3rOfD3sast3r'));
-
-// app.use(expressSession({secret:'Mast3rOfD3sast3r'}));
-
-// app.use(bodyParser.urlencoded({ extended: true }));
-
-
 
 app.get('/', function(req, res){
   res.render('index',{});
 });
 
+app.get('/auth/facebook', passport.authenticate('facebook'));
+
+app.post('/', function(req, res){
+  req.session.userName = req.body.userName;
+  res.redirect('/');
+});
 
 // app.get('/spoti', ensureAuthenticated, function(req, res){
 app.get('/spoti', function(req, res){
     console.log('spoti');
-    res.render('spoti', {});
    
-    // User.findById(req.session.passport.user, function(err, user) {
-        // if(err) {
-            // console.log(err);
-        // } else {
-        	// res.render('spoti', { userID: user});
+    User.findById(req.session.passport.user, function(err, user) {
+        if(err) {
+            console.log(err);
+        } else {
+        	res.render('spoti', { userID: user});
             
-        // }
-	// });
+        }
+	});
 });
 
 start();
@@ -271,7 +242,6 @@ function start(){
 
 
 function ensureAuthenticated(req, res, next) {
-    console.log(req.isAuthenticated());
     if (req.isAuthenticated()){
         return next(); 
     }
