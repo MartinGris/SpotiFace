@@ -31,7 +31,7 @@ app.use(passport.session());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-var EVENTID = '714934911932513';
+var EVENTID = '714934911932512';
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http); 
@@ -70,7 +70,7 @@ passport.use(new FacebookStrategy({
               return;
             }
             if (data) {
-                if( isEventAttending( data ) ){
+                if( isEventAttending( data.data ) ){
                     return done(null, profile);
                 }
                 else{
@@ -108,7 +108,7 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook', {
   failureRedirect: '/error'
 }));
  
-app.get('/success', ensureAuthenticated, function(req, res, next) {
+app.get('/spoti', ensureAuthenticated, function(req, res, next) {
   res.send('Successfully logged in. <a href="/logout"> LOGOUT </a>');
 });
  
@@ -129,56 +129,12 @@ app.get('/spoti', function(req, res){
 
 start();
 
-// { id: '768625053173263',
-  // username: undefined,
-  // displayName: 'Martin Gri',
-  // name: { familyName: 'Gri', givenName: 'Martin', middleName: undefined },
-  // gender: 'male',
-  // profileUrl: 'https://www.facebook.com/app_scoped_user_id/768625053173263/',
-  // provider: 'facebook',
-  // _raw: '{"id":"768625053173263","first_name":"Martin","gender":"male","last_name":"Gri","link":"https:\\/\\/www.facebook.com\\/app_scoped_user_id\\/768625053173263\\/","locale":"en_GB","name":"Martin Gri","timezone":1,"updated_time":"2$
-  // _json:
-   // { id: '768625053173263',
-     // first_name: 'Martin',
-     // gender: 'male',
-     // last_name: 'Gri',
-     // link: 'https://www.facebook.com/app_scoped_user_id/768625053173263/',
-     // locale: 'en_GB',
-     // name: 'Martin Gri',
-     // timezone: 1,
-     // updated_time: '2014-10-27T15:08:25+0000',
-     // verified: true } }
-// { data:
-   // [ { location: 'Partykeller Wickede',
-       // name: 'Geburtstagsfeierei',
-       // start_time: '2014-11-29T21:00:00+0100',
-       // timezone: 'Europe/Berlin',
-       // id: '714934911932512',
-       // rsvp_status: 'attending' },
-     // { end_time: '2014-11-21T07:30:00+0100',
-       // location: 'Hafenschänke subrosa',
-       // name: 'open stage: TALENTSCHUPPEN',
-       // start_time: '2014-11-20T19:30:00+0100',
-       // timezone: 'Europe/Berlin',
-       // id: '212460612213440',
-       // rsvp_status: 'attending' },
-     // { location: 'Dortmund Asseln',
-       // name: 'Partygaragengeburtstagsparty',
-       // start_time: '2014-11-14T20:00:00+0100',
-       // id: '1480626448891345',
-       // rsvp_status: 'attending' } ],
-  // paging:
-   // { cursors:
-      // { before: 'T0Rnd01UZzJOVGN5TURFMU9ETTRPakUwTWpNNU5EQTBNREE2TVRZMU1EZzBPRGsyT0RRNE5UZ3g=',
-        // after: 'TVRRNE1EWXlOalEwT0RnNU1UTTBOVG94TkRFMU9Ua3hOakF3T2pFMk5UQTRORGc1TmpnME9EVTRNUT09' },
-     // next: 'https://graph.facebook.com/v2.2/768625053173263/events?access_token=CAAJVh6M9cq4BAAdzZB04Jym5el1iJaOvt6JBLatyXLr3sSMkJmZCBh5Z }}
-
 
 function isEventAttending( data ){
     console.log('debug1');
-    console.log('data length: ' + data.data.length);
+    console.log('data length: ' + data.length);
     for( var i = 0; i < data.data.length; i++ ){
-        var event = data.data[i];
+        var event = data[i];
         console.log( 'event data: ' + event);
         console.log( 'event id: ' + event.id);
         if( event.id == EVENTID){
@@ -189,107 +145,12 @@ function isEventAttending( data ){
 }
 
 
-
-
-
-
-
-// router.get('/', function(req, res){
-    // console.log('hello world');
-    // res.render('index',{});
-    // res.json({ message: 'hooray! welcome to our api!' });
-	// db.query('SELECT * FROM message', function(err, rows){
-		// if(err)
-           // console.log("Error Selecting : %s ",err );
-		     
-        // console.log(rows);
-		// res.render('index',{data:rows});
-	
-	// });
-
-// });
-
-// app.use('/', router);
-
-// app.use(passport.initialize());
-// app.use(passport.session({
-    // resave: true,
-    // saveUninitialized: true
-// }));
-
-
-// var db = mysql.createConnection(
-    // {
-      // host     : process.env.OPENSHIFT_MYSQL_DB_HOST,
-      // user     : process.env.OPENSHIFT_MYSQL_DB_USERNAME,
-      // password : process.env.OPENSHIFT_MYSQL_DB_PASSWORD,
-      // database : 'chat',
-    // }
-// );
-
-// db.connect(function(err){
-    // if (err) console.log(err)
-// });
-
-
-
-// passport.serializeUser(function(user, done) {
-  // done(null, user.id);
-// });
-
-// passport.deserializeUser(function(id, done) {
-  // User.findById(id, function(err, user) {
-    // done(err, user);
-  // });
-// });  
-  
-  
-// passport.use(new FacebookStrategy({
-    // clientID: '656991001080494',
-    // clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
-    // callbackURL: "http://spotiface-grisard.rhcloud.com/spoti"
-  // },
-  // function(accessToken, refreshToken, profile, done) {
-    // console.log(accessToken);
-  
-    // User.findOrCreate({ facebookId: profile.id }, function (err, user) {
-      // return done(err, user);
-    // });
-  // }
-// ));
-
-
-// Redirect the user to Facebook for authentication.  When complete,
-// Facebook will redirect the user back to the application at
-//     /auth/facebook/callback
-
-// app.get('/auth/facebook', passport.authenticate('facebook'));
-
-// Facebook will redirect the user to this URL after approval.  Finish the
-// authentication process by attempting to obtain an access token.  If
-// access was granted, the user will be logged in.  Otherwise,
-// authentication has failed.
-
-
-// app.get('/auth/facebook/callback', 
-  // passport.authenticate('facebook', { successRedirect: '/',
-                                      // failureRedirect: "http://spotiface-grisard.rhcloud.com" }));
-
-
-
-
-// app.get('/spoti', ensureAuthenticated, function(req, res){
-    // console.log('spoti');
-   
-    // User.findById(req.session.passport.user, function(err, user) {
-        // if(err) {
-            // console.log(err);
-        // } else {
-        	// res.render('spoti', { user: user});
-            
-        // }
-	// });
-// });
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()){
+        return next(); 
+    }
+    res.redirect('/')
+}
 
 io.on('connection', function(socket){
 	console.log('a user connected');
@@ -334,10 +195,4 @@ function start(){
 
 
 
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()){
-        return next(); 
-    }
-    res.redirect('/')
-}
 
