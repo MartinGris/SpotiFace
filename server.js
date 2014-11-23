@@ -108,7 +108,7 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook', {
   failureRedirect: '/error'
 }));
  
-app.get('/spoti', ensureAuthenticated, function(req, res, next) {
+app.get('/success', ensureAuthenticated, function(req, res, next) {
   res.send('Successfully logged in. <a href="/logout"> LOGOUT </a>');
 });
  
