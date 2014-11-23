@@ -134,7 +134,8 @@ function isEventAttending( data ){
     
     for( var i = 0; i < data.lengtg; i++ ){
         var event = data[i];
-        
+        console.log( 'event data: ' + event);
+        console.log( 'event id: ' + event.id);
         if( event.id == EVENTID){
             return true;
         }
