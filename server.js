@@ -15,6 +15,8 @@ var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
 var passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy;
+  
+var sdk = require('facebook-node-sdk');
 
 var app = express();
 
@@ -39,17 +41,40 @@ var io = require('socket.io')(http);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
+var fbApi;
+
 passport.use(new FacebookStrategy({
     clientID: '656991001080494',
     clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
     callbackURL: "http://spotiface-grisard.rhcloud.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
+    
+    fb = new sdk({
+            appId: '656991001080494',
+            secret: '57762c91c1d1bc4ed348334a19b7a015'
+        }).setAccessToken(accessToken);
+    
+    
     console.log(accessToken);
     process.nextTick(function() {
         console.log(profile.name.givenName);
         console.log(profile);
         done(null, profile);
+        
+        var id = profile.id;
+        
+        
+        fb.api('/' + id + '/events/attending', function(err, data) {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            if (data) {
+              console.log(data);
+            }
+        });
+        
     });
   }
 ));
