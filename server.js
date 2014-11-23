@@ -132,7 +132,7 @@ start();
 
 function isEventAttending( data ){
     
-    for( var i = 0; i < data.lengtg; i++ ){
+    for( var i = 0; i < data.length; i++ ){
         var event = data[i];
         console.log( 'event data: ' + event);
         console.log( 'event id: ' + event.id);
