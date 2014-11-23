@@ -66,7 +66,7 @@ app.get('/', function(req, res){
   res.render('index',{});
 });
 
-app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'user_events' }));
 
 app.post('/', function(req, res){
   req.session.userName = req.body.userName;
