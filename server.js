@@ -48,6 +48,7 @@ passport.use(new FacebookStrategy({
     console.log(accessToken);
     process.nextTick(function() {
         console.log(profile.name.givenName);
+        console.log(profile);
         done(null, profile);
     });
   }
