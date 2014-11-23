@@ -31,6 +31,7 @@ app.use(passport.session());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
+var EVENTID = '714934911932512';
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http); 
@@ -58,20 +59,23 @@ passport.use(new FacebookStrategy({
     
     console.log(accessToken);
     process.nextTick(function() {
-        console.log(profile.name.givenName);
-        console.log(profile);
-        done(null, profile);
-        
+        // console.log(profile.name.givenName);
+        // console.log(profile);
+                
         var id = profile.id;
-        
-        
+                
         fb.api('/' + id + '/events/attending', function(err, data) {
             if (err) {
               console.log(err);
               return;
             }
             if (data) {
-              console.log(data);
+                if( isEventAttending( data ) ){
+                    return done(null, profile);
+                }
+                else{
+                    return done(null, false);
+                }
             }
         });
         
@@ -126,8 +130,17 @@ app.get('/spoti', function(req, res){
 start();
 
 
-
-
+function isEventAttending( data ){
+    
+    for( var i = 0; i < data.lengtg; i++ ){
+        var event = data[i];
+        
+        if( event.id == EVENTID){
+            return true;
+        }
+    }
+    return false;
+}
 
 
 
