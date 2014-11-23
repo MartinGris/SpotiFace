@@ -132,6 +132,7 @@ start();
 
 function isEventAttending( data ){
     console.log('debug1');
+    console.log('data length: ' + data.length);
     for( var i = 0; i < data.length; i++ ){
         var event = data[i];
         console.log( 'event data: ' + event);
