@@ -41,12 +41,12 @@ var io = require('socket.io')(http);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
-var options = {
-    appkeyFile: './spotify_appkeyFile.key',
-    cacheFolder: 'cache',
-    settingsFolder: 'settings'
-};
-var spotify = require('spotify')(options);
+// var options = {
+    // appkeyFile: './spotify_appkeyFile.key',
+    // cacheFolder: 'cache',
+    // settingsFolder: 'settings'
+// };
+var spotify = require('spotify')({ appkeyFile: 'spotify_appkeyFile.key' });
 
 var ready = function() {
     console.log('node-spotify is ready to exeute more code!');
