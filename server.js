@@ -42,11 +42,11 @@ app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
 // var options = {
-    // appkeyFile: './spotify_appkeyFile.key',
+    // appkeyFile: './spotify_appkey.key',
     // cacheFolder: 'cache',
     // settingsFolder: 'settings'
 // };
-var spotify = require('spotify')({ appkeyFile: 'spotify_appkeyFile.key' });
+var spotify = require('spotify')({ appkeyFile: 'spotify_appkey.key' });
 
 var ready = function() {
     console.log('node-spotify is ready to exeute more code!');
