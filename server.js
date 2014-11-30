@@ -30,7 +30,6 @@ app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 var EVENTID = '714934911932512';
 
 var http = require('http').Server(app);
@@ -83,6 +82,23 @@ passport.use(new FacebookStrategy({
   }
 ));
 
+var options = {
+    appkeyFile: './spotify_appkeyFile.key',
+    cacheFolder: 'cache',
+    settingsFolder: 'settings'
+};
+var spotify = require('spotify')(options);
+
+var ready = function() {
+    console.log('node-spotify is ready to exeute more code!');
+    //your apps functionality should start here
+};
+spotify.on({
+    ready: ready
+};
+
+spotify.login('martin@grisard.net', '3rdf3rk3l', false, false);
+
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -104,7 +120,7 @@ app.post('/', function(req, res){
 });
 
 app.get('/auth/facebook/callback', passport.authenticate('facebook', {
-  successRedirect: '/success',
+  successRedirect: '/spoti',
   failureRedirect: '/error'
 }));
  
@@ -121,7 +137,7 @@ app.get('/logout', function(req, res, next) {
   res.redirect('/');
 });
 // app.get('/spoti', ensureAuthenticated, function(req, res){
-app.get('/spoti', function(req, res){
+app.get('/spoti', ensureAuthenticated, function(req, res, next){
     console.log('spoti');
     res.render('spoti');
 
