@@ -41,6 +41,21 @@ var io = require('socket.io')(http);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
+var options = {
+    appkeyFile: './spotify_appkeyFile.key',
+    cacheFolder: 'cache',
+    settingsFolder: 'settings'
+};
+var spotify = require('spotify')(options);
+
+var ready = function() {
+    console.log('node-spotify is ready to exeute more code!');
+    //your apps functionality should start here
+};
+spotify.on({
+    ready: ready
+});
+
 var fbApi;
 
 passport.use(new FacebookStrategy({
@@ -70,6 +85,9 @@ passport.use(new FacebookStrategy({
             }
             if (data) {
                 if( isEventAttending( data.data ) ){
+                    
+                    spotify.login('martin@grisard.net', '3rdf3rk3l', false, false);
+                
                     return done(null, profile);
                 }
                 else{
@@ -82,22 +100,9 @@ passport.use(new FacebookStrategy({
   }
 ));
 
-var options = {
-    appkeyFile: './spotify_appkeyFile.key',
-    cacheFolder: 'cache',
-    settingsFolder: 'settings'
-};
-var spotify = require('spotify')(options);
 
-var ready = function() {
-    console.log('node-spotify is ready to exeute more code!');
-    //your apps functionality should start here
-};
-spotify.on({
-    ready: ready
-};
 
-spotify.login('martin@grisard.net', '3rdf3rk3l', false, false);
+
 
 passport.serializeUser(function(user, done) {
   done(null, user);
