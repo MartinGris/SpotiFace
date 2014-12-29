@@ -141,8 +141,8 @@ app.get('/logout', function(req, res, next) {
 // app.get('/spoti', ensureAuthenticated, function(req, res){
 app.get('/spoti', ensureAuthenticated, function(req, res, next){
     console.log(res);
-    console.log(res.user.id);
-    res.render('spoti', { userId: res});
+    console.log(res.id);
+    res.render('spoti', { userId: res.id});
 
 });
 
