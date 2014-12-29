@@ -140,10 +140,9 @@ app.get('/logout', function(req, res, next) {
 });
 // app.get('/spoti', ensureAuthenticated, function(req, res){
 app.get('/spoti', ensureAuthenticated, function(req, res, next){
-    console.log(res);
-    console.log(req);
-    console.log(res['user']);
-    res.render('spoti', { userId: res['user'].id});
+    console.log(res.req);
+    console.log(res.req.user.id);
+    res.render('spoti', { userId: res.req.user.id});
 
 });
 
