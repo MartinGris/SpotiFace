@@ -1,6 +1,7 @@
 var searchTimeout;
 
 $(document).ready(function () {
+	console.log(userId);
     $('#searchInput').keyup(function(){ 
     	
     	var searchInput = $(this).val();
