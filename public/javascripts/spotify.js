@@ -64,7 +64,7 @@ function displaySong( id ){
     	
     	rowString = "<tr id ='" + id + "'> <td>" + data.artists[0].name + "</td>";
     	rowString += "<td>" + data.name + "</td>";
-    	rowString += "<td class='text-center'><a> <span onClick='javascript: playSong( \" " + data.tracks.items[i].preview_url + " \")' class='glyphicon glyphicon-play-circle'></span>  </a>";
+    	rowString += "<td class='text-center'><a> <span onClick='javascript: playSong( \" " + data.preview_url + " \")' class='glyphicon glyphicon-play-circle'></span>  </a>";
     	rowString += "<a> <span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span> </a> </td> </tr>";
     	
     	$("#songList tbody").append( rowString );
