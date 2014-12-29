@@ -46,15 +46,15 @@ app.set('view engine', 'ejs');
     // cacheFolder: 'cache',
     // settingsFolder: 'settings'
 // };
-var spotify = require('spotify')({ appkeyFile: 'spotify_appkey.key' });
+// var spotify = require('spotify')({ appkeyFile: 'spotify_appkey.key' });
 
-var ready = function() {
-    console.log('node-spotify is ready to exeute more code!');
-    //your apps functionality should start here
-};
-spotify.on({
-    ready: ready
-});
+// var ready = function() {
+    // console.log('node-spotify is ready to exeute more code!');
+    // your apps functionality should start here
+// };
+// spotify.on({
+    // ready: ready
+// });
 
 var fbApi;
 
@@ -84,10 +84,7 @@ passport.use(new FacebookStrategy({
               return;
             }
             if (data) {
-                if( isEventAttending( data.data ) ){
-                    
-                    spotify.login('martin@grisard.net', '3rdf3rk3l', false, false);
-                
+                if( isEventAttending( data.data ) ){                
                     return done(null, profile);
                 }
                 else{
