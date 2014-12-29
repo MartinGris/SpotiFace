@@ -140,7 +140,6 @@ app.get('/logout', function(req, res, next) {
 });
 // app.get('/spoti', ensureAuthenticated, function(req, res){
 app.get('/spoti', ensureAuthenticated, function(req, res, next){
-    console.log('spoti');
     res.render('spoti');
 
 });
