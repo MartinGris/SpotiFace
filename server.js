@@ -169,8 +169,11 @@ app.get('/spoti', ensureAuthenticated, function(req, res, next){
 
 
 app.get('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
-    
+	
 	var userId = req.params.id;
+
+	avoidMisusageOfApi(res, userId);
+    
 	db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
 		if(err){
 			console.log("Error Selecting : %s ",err );
@@ -186,6 +189,9 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	
 	var userId = req.params.id;
 	var songId = req.body.songId;
+	
+	avoidMisusageOfApi(res, userId);
+	
 	db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
 		if(err){
 			console.log("Error Selecting : %s ",err );
@@ -219,8 +225,31 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	
 });
 
+app.delete('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
+	
+	var userId = req.params.id;
+	var songId = req.body.songId;
+	
+	avoidMisusageOfApi(res, userId);
+	
+	db.query('DELETE FROM user_song WHERE user_id = ? and song_id = ?', [userId, songId], function(err, rows){
+		if(err){
+			console.log("Error Selecting : %s ",err );
+		}
+		
+		res.send(songId);
+		
+	});
+	
+});
+
 start();
 
+function avoidMisusageOfApi(res, id){
+	if( res.req.user.id != id ){
+		res.redirect('/');
+	}
+}
 
 function isEventAttending( data ){
     for( var i = 0; i < data.length; i++ ){
@@ -234,7 +263,6 @@ function isEventAttending( data ){
     return false;
 }
 
-
 function ensureAuthenticated(req, res, next) {
 	console.log("authentication check");
     if (req.isAuthenticated()){
@@ -242,6 +270,8 @@ function ensureAuthenticated(req, res, next) {
     }
     res.redirect('/')
 }
+
+function
 
 io.on('connection', function(socket){
 	console.log('a user connected');
