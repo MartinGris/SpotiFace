@@ -45,7 +45,7 @@ app.set('view engine', 'ejs');
 
 var db = mysql.createConnection(
 	    {
-	      host     : 'localhost',
+	      host     : '88.152.184.6',
 	      user     : 'spotiface',
 	      password : 'h4mst3rSpoti',
 	      database : 'spotiface',
@@ -160,7 +160,7 @@ app.get('/spoti', ensureAuthenticated, function(req, res, next){
 });
 
 
-app.get('/user/:id/songs', ensureAuthenticated, function(req, res, next){
+app.get('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
     
 	var userId = req.params.id;
 	db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
