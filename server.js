@@ -8,6 +8,8 @@
 // var MongoStore = require('connect-mongo')(session);
 
 // var mongoose = require('mongoose');
+var EVENTID = '326870277419746';
+var SONGLIMIT = 3;
 
 var express = require('express');
 var bodyParser = require('body-parser'); // for reading POSTed form data into `req.body`
@@ -32,7 +34,6 @@ app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var EVENTID = '326870277419746';
 
 var http = require('http').Server(app);
 var io = require('socket.io')(http); 
@@ -164,13 +165,48 @@ app.get('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
     
 	var userId = req.params.id;
 	db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
-		if(err)
-           console.log("Error Selecting : %s ",err );
+		if(err){
+			console.log("Error Selecting : %s ",err );
+		}
 		     
-		res.send({data:rows});
+		res.send(rows);
 	
 	});
 
+});
+
+app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
+	
+	var userId = req.params.id;
+	var songId = req.body.songId;
+	db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
+		if(err){
+			console.log("Error Selecting : %s ",err );
+		}
+		
+		if( rows.length = 3 ){
+			res.status(423).send('You already got ' + SONGLIMIT + ' songs in your list dude!')
+		}
+		for( var i = 0; i < rows.length; i++ ){
+			if( rows[i].song_id === songId ){
+				res.status(423).send('This song is already in your list dude!')
+			}
+		}
+		
+		 var data = {
+			 user_id   : userId,
+			 song_id   :  songId
+		 };
+		var query = db.query("INSERT INTO user_song set ? ",data, function(err, rows){
+	        if (err){
+	        	console.log("Error inserting : %s ",err );
+	        }
+		});
+		
+		res.send(songId);
+		
+	});
+	
 });
 
 start();
