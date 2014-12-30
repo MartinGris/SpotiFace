@@ -172,15 +172,17 @@ app.get('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	
 	var userId = req.params.id;
 
-	avoidMisusageOfApi(res, userId);
-    
-	db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
-		if(err){
-			console.log("Error Selecting : %s ",err );
-		}
-		     
-		res.send(rows);
-	
+	secureApi(res, userId, function(){
+		
+		db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
+			if(err){
+				console.log("Error Selecting : %s ",err );
+			}
+			
+			res.send(rows);
+			
+		});
+		
 	});
 
 });
@@ -190,36 +192,38 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	var userId = req.params.id;
 	var songId = req.body.songId;
 	
-	avoidMisusageOfApi(res, userId);
-	
-	db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
-		if(err){
-			console.log("Error Selecting : %s ",err );
-		}
+	secureApi(res, userId, function(){
 		
-		if( rows.length == 3 ){
-			res.status(423).send('You already got ' + SONGLIMIT + ' songs in your list dude!')
-			return;
-		}
-		for( var i = 0; i < rows.length; i++ ){
-			if( rows[i].song_id === songId ){
-				console.log("song already in list");
-				res.status(423).send('This song is already in your list dude!')
+		db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
+			if(err){
+				console.log("Error Selecting : %s ",err );
+			}
+			
+			if( rows.length == 3 ){
+				res.status(423).send('You already got ' + SONGLIMIT + ' songs in your list dude!')
 				return;
 			}
-		}
-		
-		 var data = {
-			 user_id   : userId,
-			 song_id   :  songId
-		 };
-		var query = db.query("INSERT INTO user_song set ? ",data, function(err, rows){
-	        if (err){
-	        	console.log("Error inserting : %s ",err );
-	        }
+			for( var i = 0; i < rows.length; i++ ){
+				if( rows[i].song_id === songId ){
+					console.log("song already in list");
+					res.status(423).send('This song is already in your list dude!')
+					return;
+				}
+			}
+			
+			var data = {
+					user_id   : userId,
+					song_id   :  songId
+			};
+			var query = db.query("INSERT INTO user_song set ? ",data, function(err, rows){
+				if (err){
+					console.log("Error inserting : %s ",err );
+				}
+			});
+			
+			res.send(songId);
+			
 		});
-		
-		res.send(songId);
 		
 	});
 	
@@ -230,14 +234,16 @@ app.delete('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next
 	var userId = req.params.id;
 	var songId = req.body.songId;
 	
-	avoidMisusageOfApi(res, userId);
-	
-	db.query('DELETE FROM user_song WHERE user_id = ? and song_id = ?', [userId, songId], function(err, rows){
-		if(err){
-			console.log("Error Selecting : %s ",err );
-		}
+	secureApi(res, userId, function(){
 		
-		res.send(songId);
+		db.query('DELETE FROM user_song WHERE user_id = ? and song_id = ?', [userId, songId], function(err, rows){
+			if(err){
+				console.log("Error Selecting : %s ",err );
+			}
+			
+			res.send(songId);
+			
+		});
 		
 	});
 	
@@ -245,10 +251,13 @@ app.delete('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next
 
 start();
 
-function avoidMisusageOfApi(res, id){
+function secureApi(res, id, callback){
 	if( res.req.user.id != id ){
 		console.log("cross usage of api is not allowed");
 		res.redirect('/');
+	}
+	else{
+		callback();
 	}
 }
 
