@@ -1,6 +1,11 @@
 var searchTimeout;
 
 $(document).ready(function () {
+	
+	loadUserSongs();
+	
+	
+	
     $('#searchInput').keyup(function(){ 
     	
     	var searchInput = $(this).val();
@@ -17,6 +22,17 @@ $(document).ready(function () {
 
     });
 });
+
+function loadUserSongs(){
+	
+	$.ajax( "http://spotiface-grisard.rhcloud.com/spoti/user/" + userId + "/songs" )
+	.done(function(data) {
+		
+		for( var i = 0; i < data.length; i++){
+			displaySong( data[i].song_id );
+		}
+	
+}
 
 function searchAjaxRequest( searchInput ){
 	console.log(encodeURIComponent( searchInput ));
@@ -59,35 +75,35 @@ function addSong( id ){
 		  dataType: "json",
 		  data: {songId: id},
 		  statusCode: {
-			  423: function( data ) {
-			      alert( data.responseText );
-			    },
-			  200: function( data ){
-				  $.ajax( "https://api.spotify.com/v1/tracks/" + id )
-				  .done(function(data) {
-					  console.log(data);
-					  
-					  var rowString = "";
-					  
-					  rowString = "<tr id ='" + id + "'> <td>" + data.artists[0].name + "</td>";
-					  rowString += "<td>" + data.name + "</td>";
-					  rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \" " + data.preview_url + " \", $(this) ); toggleButton( $(this) );' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
-					  rowString += " <a><span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span></a> </td> </tr>";
-					  
-					  $("#songList tbody").append( rowString );
-					  
-				  }).fail(function() {
-					  // alert( "error" );
-				  })
-				  
+				  423: function( data ) {
+				      alert( data.responseText );
+				    },
+				  200: function( data ){
+					  displaySong( id );				  
 			  }  
 			  }
-		}).done(function( data ){
-			
-			
-			
 		});
 	
+}
+
+function displaySong( songId ){
+	
+	 $.ajax( "https://api.spotify.com/v1/tracks/" + songId )
+	  .done(function(data) {
+		  console.log(data);
+		  
+		  var rowString = "";
+		  
+		  rowString = "<tr id ='" + id + "'> <td>" + data.artists[0].name + "</td>";
+		  rowString += "<td>" + data.name + "</td>";
+		  rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \" " + data.preview_url + " \", $(this) ); toggleButton( $(this) );' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
+		  rowString += " <a><span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span></a> </td> </tr>";
+		  
+		  $("#songList tbody").append( rowString );
+		  
+	  }).fail(function() {
+		  // alert( "error" );
+	  })
 	
 }
 

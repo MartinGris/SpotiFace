@@ -191,7 +191,6 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 			console.log("Error Selecting : %s ",err );
 		}
 		
-		console.log("data fetched: " + rows);
 		if( rows.length == 3 ){
 			res.status(423).send('You already got ' + SONGLIMIT + ' songs in your list dude!')
 			return;
