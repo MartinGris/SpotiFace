@@ -92,7 +92,7 @@ function displaySong( songId ){
 		  
 		  var rowString = "";
 		  
-		  rowString = "<tr id ='" + id + "'> <td>" + data.artists[0].name + "</td>";
+		  rowString = "<tr id ='" + songId + "'> <td>" + data.artists[0].name + "</td>";
 		  rowString += "<td>" + data.name + "</td>";
 		  rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \" " + data.preview_url + " \", $(this) ); toggleButton( $(this) );' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
 		  rowString += " <a><span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span></a> </td> </tr>";
