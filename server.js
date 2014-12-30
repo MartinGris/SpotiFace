@@ -18,6 +18,8 @@ var passport = require('passport')
   
 var sdk = require('facebook-node-sdk');
 
+var mysql = require('mysql');
+
 var app = express();
 
 // must use cookieParser before expressSession
@@ -40,6 +42,19 @@ var io = require('socket.io')(http);
 
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
+
+var db = mysql.createConnection(
+	    {
+	      host     : 'localhost',
+	      user     : 'spotiface',
+	      password : 'h4mst3rSpoti',
+	      database : 'spotiface',
+	    }
+	);
+
+db.connect(function(err){
+    if (err) console.log(err)
+})
 
 // var options = {
     // appkeyFile: './spotify_appkey.key',
@@ -144,12 +159,24 @@ app.get('/spoti', ensureAuthenticated, function(req, res, next){
 
 });
 
+
+app.get('/user/:id/songs', ensureAuthenticated, function(req, res, next){
+    
+	var userId = req.params.id;
+	db.query('SELECT * FROM user_song WHERE user_id = ?', [userId], function(err, rows){
+		if(err)
+           console.log("Error Selecting : %s ",err );
+		     
+		res.send({data:rows});
+	
+	});
+
+});
+
 start();
 
 
 function isEventAttending( data ){
-    console.log('debug1');
-    console.log('data length: ' + data.length);
     for( var i = 0; i < data.length; i++ ){
         var event = data[i];
         console.log( 'event data: ' + event);
@@ -163,6 +190,7 @@ function isEventAttending( data ){
 
 
 function ensureAuthenticated(req, res, next) {
+	console.log("authentication check");
     if (req.isAuthenticated()){
         return next(); 
     }
@@ -201,6 +229,7 @@ function start(){
         //  allows us to run/test the app locally.
         console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
         ipaddress = "127.0.0.1";
+        port = 8080;
     }
 
 

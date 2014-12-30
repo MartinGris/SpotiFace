@@ -13,7 +13,7 @@ $(document).ready(function () {
         searchTimeout = setTimeout(function()
         {
         	searchAjaxRequest( searchInput );
-        }, 700);
+        }, 200);
 
     });
 });
@@ -30,8 +30,8 @@ function searchAjaxRequest( searchInput ){
 		    	
 		    	rowString = "<tr> <td>" + data.tracks.items[i].artists[0].name + "</td>";
 		    	rowString += "<td>" + data.tracks.items[i].name + "</td>";
-		    	rowString += "<td class='text-center'><a> <span onClick='javascript: playSong( \" " + data.tracks.items[i].preview_url + " \")' class='glyphicon glyphicon-play-circle'></span>  </a>";
-		    	rowString += "<a> <span onClick='javascript: displaySong(\""+ data.tracks.items[i].id + "\")' class='glyphicon glyphicon-plus'></span> </a> </td> </tr>";
+		    	rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \" " + data.tracks.items[i].preview_url + " \", $(this)); toggleButton($(this));' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
+		    	rowString += " <a><span onClick='javascript: addSong(\""+ data.tracks.items[i].id + "\")' class='glyphicon glyphicon-plus'></span></a> </td> </tr>";
 		    	
 		    	$("#searchResult tbody").append( rowString );
 		    }
@@ -51,11 +51,8 @@ function searchAjaxRequest( searchInput ){
 	    })
 	
 }
-function playSong( src ){
-	document.getElementById("iframePlay").src=src;
-}
 
-function displaySong( id ){
+function addSong( id ){
     $.ajax( "https://api.spotify.com/v1/tracks/" + id )
 	.done(function(data) {
 		console.log(data);
@@ -64,8 +61,8 @@ function displaySong( id ){
     	
     	rowString = "<tr id ='" + id + "'> <td>" + data.artists[0].name + "</td>";
     	rowString += "<td>" + data.name + "</td>";
-    	rowString += "<td class='text-center'><a> <span onClick='javascript: playSong( \" " + data.preview_url + " \")' class='glyphicon glyphicon-play-circle'></span>  </a>";
-    	rowString += "<a> <span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span> </a> </td> </tr>";
+    	rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \" " + data.preview_url + " \", $(this) ); toggleButton( $(this) );' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
+    	rowString += " <a><span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span></a> </td> </tr>";
     	
     	$("#songList tbody").append( rowString );
 		
@@ -79,3 +76,33 @@ function displaySong( id ){
 function deleteSong( id ){
 	$("#"+id).remove();
 }
+
+function playStopSong( src, element ){
+	
+	var classList = element.classList;
+
+	if( element.hasClass( "glyphicon-play-circle" )){
+		document.getElementById("iframePlay").src=src;
+	}
+	else{
+		document.getElementById("iframePlay").src="";
+	}
+}
+
+function toggleButton( element ){
+	
+	if( element.hasClass("glyphicon-play-circle")){
+		//reset all buttons
+		$(".playbutton").removeClass("glyphicon-stop glyphicon-play-circle")
+		$(".playbutton").addClass("glyphicon-play-circle")
+	}
+	
+	element.toggleClass( "glyphicon-play-circle glyphicon-stop" )
+	
+}
+
+
+
+
+
+
