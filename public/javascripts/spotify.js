@@ -53,24 +53,41 @@ function searchAjaxRequest( searchInput ){
 }
 
 function addSong( id ){
-    $.ajax( "https://api.spotify.com/v1/tracks/" + id )
-	.done(function(data) {
-		console.log(data);
-		
-    	var rowString = "";
-    	
-    	rowString = "<tr id ='" + id + "'> <td>" + data.artists[0].name + "</td>";
-    	rowString += "<td>" + data.name + "</td>";
-    	rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \" " + data.preview_url + " \", $(this) ); toggleButton( $(this) );' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
-    	rowString += " <a><span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span></a> </td> </tr>";
-    	
-    	$("#songList tbody").append( rowString );
-		
-	  })
-	    
-    .fail(function() {
-      // alert( "error" );
-    })
+	$.ajax({
+		  type: "PUT",
+		  url: "http://spotiface-grisard.rhcloud.com/spoti/user/" + userId +  "/songs",
+		  dataType: "json",
+		  data: {songId: id},
+		  statusCode: {
+			  423: function( message ) {
+			      alert( message );
+			    }
+			  }
+		}).done(function( data ){
+			
+			$.ajax( "https://api.spotify.com/v1/tracks/" + id )
+			.done(function(data) {
+				console.log(data);
+				
+				var rowString = "";
+				
+				rowString = "<tr id ='" + id + "'> <td>" + data.artists[0].name + "</td>";
+				rowString += "<td>" + data.name + "</td>";
+				rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \" " + data.preview_url + " \", $(this) ); toggleButton( $(this) );' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
+				rowString += " <a><span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span></a> </td> </tr>";
+				
+				$("#songList tbody").append( rowString );
+				
+			})
+			
+			.fail(function() {
+				// alert( "error" );
+			})
+			
+			
+		});
+	
+	
 }
 
 function deleteSong( id ){
