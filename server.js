@@ -156,7 +156,14 @@ app.get('/logout', function(req, res, next) {
 });
 // app.get('/spoti', ensureAuthenticated, function(req, res){
 app.get('/spoti', ensureAuthenticated, function(req, res, next){
-    res.render('spoti', { userId: res.req.user.id});
+	db.query('SELECT * FROM user_song WHERE user_id = ?', [res.req.user.id], function(err, rows){
+		if(err){
+			console.log("Error Selecting : %s ",err );
+		}
+		
+		res.render('spoti', { userId: res.req.user.id, songs: rows});
+		
+	});
 
 });
 
@@ -184,11 +191,13 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 			console.log("Error Selecting : %s ",err );
 		}
 		
+		console.log("data fetched: " + rows);
 		if( rows.length == 3 ){
 			res.status(423).send('You already got ' + SONGLIMIT + ' songs in your list dude!')
 		}
 		for( var i = 0; i < rows.length; i++ ){
 			if( rows[i].song_id === songId ){
+				console.log("song already in list");
 				res.status(423).send('This song is already in your list dude!')
 			}
 		}

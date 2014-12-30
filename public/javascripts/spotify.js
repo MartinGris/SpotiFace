@@ -13,7 +13,7 @@ $(document).ready(function () {
         searchTimeout = setTimeout(function()
         {
         	searchAjaxRequest( searchInput );
-        }, 200);
+        }, 500);
 
     });
 });
