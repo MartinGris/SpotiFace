@@ -163,7 +163,7 @@ app.get('/spoti', ensureAuthenticated, function(req, res, next){
 app.get('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
     
 	var userId = req.params.id;
-	db.query('SELECT * FROM user_song WHERE user_id = 1' function(err, rows){
+	db.query('SELECT * FROM user_song WHERE user_id = 1', function(err, rows){
 		if(err)
            console.log("Error Selecting : %s ",err );
 		     
