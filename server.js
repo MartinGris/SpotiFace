@@ -194,11 +194,13 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 		console.log("data fetched: " + rows);
 		if( rows.length == 3 ){
 			res.status(423).send('You already got ' + SONGLIMIT + ' songs in your list dude!')
+			return;
 		}
 		for( var i = 0; i < rows.length; i++ ){
 			if( rows[i].song_id === songId ){
 				console.log("song already in list");
 				res.status(423).send('This song is already in your list dude!')
+				return;
 			}
 		}
 		
