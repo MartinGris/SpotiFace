@@ -247,6 +247,7 @@ start();
 
 function avoidMisusageOfApi(res, id){
 	if( res.req.user.id != id ){
+		console.log("cross usage of api is not allowed");
 		res.redirect('/');
 	}
 }

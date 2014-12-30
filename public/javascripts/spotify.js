@@ -110,7 +110,7 @@ function deleteSong( songId ){
 		  type: "DELETE",
 		  url: "http://spotiface-grisard.rhcloud.com/spoti/user/" + userId +  "/songs",
 		  dataType: "json",
-		  data: {songId: id}
+		  data: {songId: songId}
 		});
 	
 	$("#"+songId).remove();
