@@ -59,6 +59,8 @@ function searchAjaxRequest( searchInput ){
 		    else{
 		    	$("#searchResultDiv").collapse('hide')
 		    }
+		    $(".logo").toggle();
+		    
 		  })
 	    .fail(function() {
 	      // alert( "error" );
