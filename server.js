@@ -254,10 +254,10 @@ start();
 function secureApi(res, id, callback){
 	if( res.req.user.id != id ){
 		console.log("cross usage of api is not allowed");
-		res.redirect('/');
+		res.redirect('/spoti');
 	}
 	else{
-		callback();
+		return callback();
 	}
 }
 
@@ -278,7 +278,7 @@ function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()){
         return next(); 
     }
-    res.redirect('/')
+    res.redirect('/');
 }
 
 io.on('connection', function(socket){
