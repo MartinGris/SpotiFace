@@ -271,8 +271,6 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/')
 }
 
-function
-
 io.on('connection', function(socket){
 	console.log('a user connected');
 

@@ -105,8 +105,15 @@ function displaySong( songId ){
 	
 }
 
-function deleteSong( id ){
-	$("#"+id).remove();
+function deleteSong( songId ){
+	$.ajax({
+		  type: "DELETE",
+		  url: "http://spotiface-grisard.rhcloud.com/spoti/user/" + userId +  "/songs",
+		  dataType: "json",
+		  data: {songId: id}
+		});
+	
+	$("#"+songId).remove();
 }
 
 function playStopSong( src, element ){
