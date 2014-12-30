@@ -4,8 +4,6 @@ $(document).ready(function () {
 	
 	loadUserSongs();
 	
-	
-	
     $('#searchInput').keyup(function(){ 
     	
     	var searchInput = $(this).val();
@@ -31,6 +29,7 @@ function loadUserSongs(){
 		for( var i = 0; i < data.length; i++){
 			displaySong( data[i].song_id );
 		}
+	});
 	
 }
 
@@ -61,7 +60,6 @@ function searchAjaxRequest( searchInput ){
 		    	$("#searchResultDiv").collapse('hide')
 		    }
 		  })
-		    
 	    .fail(function() {
 	      // alert( "error" );
 	    })
