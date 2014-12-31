@@ -2,7 +2,7 @@ var searchTimeout;
 
 $(document).ready(function () {
 	
-//	loadUserSongs();
+	loadUserSongs();
 	
     $('#searchInput').keyup(function(){ 
     	
