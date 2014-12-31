@@ -200,7 +200,7 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 			}
 			
 			if( rows.length == 3 ){
-				res.status(423).send('You already got ' + SONGLIMIT + ' songs in your list dude!')
+				res.status(423).send('You have already ' + SONGLIMIT + ' songs in your list dude!')
 				return;
 			}
 			for( var i = 0; i < rows.length; i++ ){

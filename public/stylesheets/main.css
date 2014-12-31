@@ -33,15 +33,6 @@ h1 {
 	margin-bottom: 30px;
 }
 
-
-
-/* Paragraph & Typographic */
-p {
-    line-height: 28px;
-    margin-bottom: 25px;
-    font-size: 16px;
-}
-
 .centered {
     text-align: center;
 }
@@ -151,11 +142,13 @@ a:after {
 
 #footer {
 	background-color: #2f2f2f;
-	padding-top: 20px;
-	padding-bottom: 10px; 
+	height: 1 %;
+	padding-top: 1px;
+	padding-bottom: 1px; 
 }
 
 #footer p {
+	padding-top: 5px;
 	color: white;
 }
 
