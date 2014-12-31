@@ -1,29 +1,56 @@
 <!doctype html>
 <html>
   <head>
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Spoti-Face</title>
-		<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-		<script src="/socket.io/socket.io.js"></script>
-		<script src="javascripts/animatescroll.js"></script>
+	<script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="javascripts/animatescroll.js"></script>
   </head>
   
   <body>
-    <div class="text-center">
-		<img class="logo" src="images/logo.png" style="width: 20%;"/>
-		<img class="logo" src="images/logo2.png" style="width: 20%; display: none;"/>
+	<div class="navbar navbar-inverse navbar-static-top">
+		<div class="container-fluid">
+			<div class="text-center">
+				<img class="logo" src="images/logo.png" style="width: 20%;"/>
+				<img class="logo" src="images/logo2.png" style="width: 20%; display: none;"/>
+			</div>
+		</div>
 	</div>
 	
 	<div class="text-center" style="margin-top: 30%">
 	    <a class="btn btn-primary btn-lg" href="/auth/facebook">Login with Facebook</a>
 	</div>
 
-    <script>
 
-
-
-    </script>
+	<div id="footer" class="footer navbar-fixed-bottom">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-4">
+					<h4>My Bunker</h4>
+					<p>
+						Some Address 987,<br/>
+					</p>
+				</div><!-- /col-lg-4 -->
+				
+				<div class="col-lg-4">
+					<h4>My Links</h4>
+					<p>
+						<a href="#">Facebook</a>
+					</p>
+				</div><!-- /col-lg-4 -->
+				
+				<div class="col-lg-4">
+					<h4>About SpotiFace</h4>
+					<p>Lorem Ipsum</p>
+				</div><!-- /col-lg-4 -->
+			
+			</div>
+		
+		</div>
+	</div>
   </body>
 </html>
 
