@@ -186,7 +186,7 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 				}
 			}
 			
-	        var getUsername = function( callback ){
+	        var getUserName = function( callback ){
 	        	
 	        	fbApi.api('/me', function(err, data) {
 	        		if (err) {
