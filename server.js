@@ -186,29 +186,37 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 				}
 			}
 			
-	        fbApi.api('/me', function(err, data) {
-	            if (err) {
-	              console.log(err);
-	              return;
-	            }
-	            if (data) {
-	            	userName = data.name;
-	            }
-	        });
+	        var getUsername = function( callback ){
+	        	
+	        	fbApi.api('/me', function(err, data) {
+	        		if (err) {
+	        			console.log(err);
+	        			return;
+	        		}
+	        		if (data) {
+	        			callback( data.name );
+	        		}
+	        	});
+	        }; 
+	        	
+	        var saveInDb = function( username ){
+	        	console.log( username );
+	        	var data = {
+	        			user_id   : userId,
+	        			song_id   :  songId,
+	        			user_name :	username
+	        	};
+	        	var query = db.query("INSERT INTO user_song set ? ",data, function(err, rows){
+	        		if (err){
+	        			console.log("Error inserting : %s ",err );
+	        		}
+	        	});
+	        };
 			
-	        console.log(userName);
-			var data = {
-					user_id   : userId,
-					song_id   :  songId,
-					user_name :	userName
-			};
-			var query = db.query("INSERT INTO user_song set ? ",data, function(err, rows){
-				if (err){
-					console.log("Error inserting : %s ",err );
-				}
-			});
+	        getUserName( saveInDb );
+	        
 			
-			res.send(songId);
+			res.send( songId );
 			
 		});
 		
