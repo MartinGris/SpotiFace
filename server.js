@@ -193,12 +193,11 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	              return;
 	            }
 	            if (data) {
-	            	console.log(data);
-	            	console.log(data.name);
 	                userName = data.name;
 	            }
 	        });
 			
+	        console.log(userName);
 			var data = {
 					user_id   : userId,
 					song_id   :  songId,
