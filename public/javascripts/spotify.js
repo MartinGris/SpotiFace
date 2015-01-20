@@ -84,7 +84,7 @@ function addSong( id ){
 				  200: function( data ){
 					  $('#alertDiv').hide();
 					  displaySong( id );				  
-			  }  
+				  }  
 			  }
 		});
 	
@@ -113,13 +113,24 @@ function displaySong( songId ){
 
 function deleteSong( songId ){
 	$.ajax({
-		  type: "DELETE",
-		  url: "http://spotiface-grisard.rhcloud.com/spoti/user/" + userId +  "/songs",
-		  dataType: "json",
-		  data: {songId: songId}
+		type: "DELETE",
+		url: "http://spotiface-grisard.rhcloud.com/spoti/user/" + userId +  "/songs",
+		dataType: "json",
+		data: {songId: songId}
+		statusCode: {
+			423: function( data ) {
+				
+				$('#alertDiv').html( data.responseText )
+				$('#alertDiv').show();
+				
+			},
+			200: function( data ){
+				$('#alertDiv').hide();
+				$("#"+songId).remove();
+			}  
+		}
 		});
 	
-	$("#"+songId).remove();
 }
 
 function playStopSong( src, element ){

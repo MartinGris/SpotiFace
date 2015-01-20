@@ -228,7 +228,7 @@ start();
 function secureApi(res, id, callback){
 	if( res.req.user.id != id ){
 		console.log("cross usage of api is not allowed");
-		res.status(403).send('delete your own songlist, motherfucker!')
+		res.status(403).send('manipulate your own songlist, motherfucker!')
 		return;
 	}
 	else{
