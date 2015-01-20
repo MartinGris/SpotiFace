@@ -1,13 +1,5 @@
 #!/bin/env node
 
-// var express = require('express');
-
-// var bodyParser = require('body-parser');
-// var cookieParser = require('cookie-parser');
-// var session      = require('express-session');
-// var MongoStore = require('connect-mongo')(session);
-
-// var mongoose = require('mongoose');
 var EVENTID = '834220376624898';
 var SONGLIMIT = 3;
 
@@ -38,39 +30,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var http = require('http').Server(app);
 var io = require('socket.io')(http); 
 
-// app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(cookieParser());
-
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
 var db = mysql.createConnection(
 	    {
-	      host     : 'sql5.freemysqlhosting.net',
-	      user     : 'sql562769',
-	      password : 'hV6*uQ9*',
-	      database : 'sql562769',
+	      host     : '93.157.51.165',
+	      user     : 'spotiUser',
+	      password : '3rdf3rk3lSpoti',
+	      database : 'spotiface',
 	    }
 	);
 
 db.connect(function(err){
     if (err) console.log(err)
 })
-
-// var options = {
-    // appkeyFile: './spotify_appkey.key',
-    // cacheFolder: 'cache',
-    // settingsFolder: 'settings'
-// };
-// var spotify = require('spotify')({ appkeyFile: 'spotify_appkey.key' });
-
-// var ready = function() {
-    // console.log('node-spotify is ready to exeute more code!');
-    // your apps functionality should start here
-// };
-// spotify.on({
-    // ready: ready
-// });
 
 var fbApi;
 
@@ -147,7 +121,7 @@ app.get('/success', ensureAuthenticated, function(req, res, next) {
 });
  
 app.get('/error', function(req, res, next) {
-  res.send("Error logging in.");
+  res.send("Login failed");
 });
 
 app.get('/logout', function(req, res, next) {
@@ -281,29 +255,6 @@ function ensureAuthenticated(req, res, next) {
     }
     res.redirect('/');
 }
-
-io.on('connection', function(socket){
-	console.log('a user connected');
-
-	// socket.on('send chat message', function(msg){
-		// var now = new Date();
-		// var data = {
-			// content   : msg,
-			// date   :  now    
-        // };
-	
-		// var query = db.query("INSERT INTO message set ? ",data, function(err, rows){
-            // if (err)
-				// console.log("Error inserting : %s ",err );
-        // });
-
-    	// io.emit('new chat message', data);
-  	// });
-
-  	socket.on('disconnect', function(){
-    	console.log('user disconnected');
-  	});
-});
 
 function start(){
     var ipaddress = process.env.OPENSHIFT_NODEJS_IP;

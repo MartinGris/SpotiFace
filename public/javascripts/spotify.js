@@ -76,9 +76,13 @@ function addSong( id ){
 		  data: {songId: id},
 		  statusCode: {
 				  423: function( data ) {
-				      alert( data.responseText );
+
+					  $('#alertDiv').html( data.responseText )
+					  $('#alertDiv').show();
+					  
 				    },
 				  200: function( data ){
+					  $('#alertDiv').hide();
 					  displaySong( id );				  
 			  }  
 			  }
