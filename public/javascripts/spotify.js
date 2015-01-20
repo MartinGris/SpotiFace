@@ -116,7 +116,7 @@ function deleteSong( songId ){
 		type: "DELETE",
 		url: "http://spotiface-grisard.rhcloud.com/spoti/user/" + userId +  "/songs",
 		dataType: "json",
-		data: {songId: songId}
+		data: {songId: songId},
 		statusCode: {
 			423: function( data ) {
 				
