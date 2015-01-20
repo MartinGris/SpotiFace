@@ -165,6 +165,7 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	
 	var userId = req.params.id;
 	var songId = req.body.songId;
+	var userName;
 	
 	secureApi(res, userId, function(){
 		
@@ -191,7 +192,7 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	              return;
 	            }
 	            if (data) {
-	            	var userName = data.name;
+	            	userName = data.name;
 	            }
 	        });
 			
