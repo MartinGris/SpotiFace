@@ -55,7 +55,7 @@ passport.use(new FacebookStrategy({
   },
   function(accessToken, refreshToken, profile, done) {
     
-    fb = new sdk({
+	  fbApi = new sdk({
             appId: '656991001080494',
             secret: '57762c91c1d1bc4ed348334a19b7a015'
         }).setAccessToken(accessToken);
@@ -68,7 +68,7 @@ passport.use(new FacebookStrategy({
                 
         var id = profile.id;
                 
-        fb.api('/' + id + '/events/attending', function(err, data) {
+        fbApi.api('/' + id + '/events/attending', function(err, data) {
             if (err) {
               console.log(err);
               return;
@@ -185,9 +185,22 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 				}
 			}
 			
+			var userName;
+			
+	        fbApi.api('User /' + userId + '', function(err, data) {
+	            if (err) {
+	              console.log(err);
+	              return;
+	            }
+	            if (data) {
+	                userName = data.name;
+	            }
+	        });
+			
 			var data = {
 					user_id   : userId,
-					song_id   :  songId
+					song_id   :  songId,
+					user_name :	userName
 			};
 			var query = db.query("INSERT INTO user_song set ? ",data, function(err, rows){
 				if (err){
