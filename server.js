@@ -81,12 +81,6 @@ passport.use(new FacebookStrategy({
             	
             	isEventAttending( data, profile, evalResultFunction )
             	
-//                if( isEventAttending( data, id  ) ){                
-//                    return done(null, profile);
-//                }
-//                else{
-//                    return done(null, false);
-//                }
             }
         });
         
@@ -264,13 +258,11 @@ function isEventAttending( data, profile, callback ){
         }
     }
     if( data.paging.next ){
-    	console.log( "Next: " + data.paging.next );
         fbApi.api('/' + profile.id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
             if (err) {
               console.log(err);
               return callback( false );
             }
-            console.log("call iseventattending");
             isEventAttending( data, profile, callback );
         });
     }
@@ -278,7 +270,6 @@ function isEventAttending( data, profile, callback ){
     	console.log("return false");
     	return callback( false );
     }
-    console.log("debug");
 }
 
 function ensureAuthenticated(req, res, next) {
