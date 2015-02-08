@@ -27,7 +27,8 @@ app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var http = require('http').Server(app);
+var httpRequest = require('http');
+var http = httpRequest.Server(app);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
@@ -257,7 +258,7 @@ function isEventAttending( data ){
     			  host: data.paging.next,
     			  path: ''
 			};
-    	http.request(options, isEventAttending).end();
+    	httpRequest.request(options, isEventAttending).end();
     }
     return false;
 }
