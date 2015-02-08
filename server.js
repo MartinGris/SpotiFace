@@ -253,6 +253,11 @@ function isEventAttending( data ){
     }
     if( data.paging.next ){
     	console.log( "Next: " + data.paging.next );
+    	var options = {
+    			  host: data.paging.next,
+    			  path: ''
+			};
+    	http.request(options, isEventAttending).end();
     }
     return false;
 }
