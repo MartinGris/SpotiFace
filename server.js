@@ -1,9 +1,9 @@
 #!/bin/env node
 
-var FACEBOOKCLIENTID = '656991001080494';
-var FACEBOOKSECRET = '57762c91c1d1bc4ed348334a19b7a015';
-var CALLBACKURL = 'http://spotiface-grisard.rhcloud.com/auth/facebook/callback';
-var EVENTID = '834220376624898';
+var FACEBOOKCLIENTID = '1234';
+var FACEBOOKSECRET = '1234';
+var CALLBACKURL = 'http://test/auth/facebook/callback';
+var EVENTID = '1234';
 var SONGLIMIT = 3;
 
 var express = require('express');
@@ -33,10 +33,10 @@ app.set('view engine', 'ejs');
 
 var db = mysql.createConnection(
 	    {
-	      host     : '93.157.51.165',
-	      user     : 'spotiUser',
-	      password : '3rdf3rk3lSpoti',
-	      database : 'spotiface',
+	      host     : 'host',
+	      user     : 'user',
+	      password : 'password',
+	      database : 'database',
 	    }
 	);
 
