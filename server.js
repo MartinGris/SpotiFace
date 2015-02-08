@@ -69,7 +69,7 @@ passport.use(new FacebookStrategy({
               return;
             }
             if (data) {
-                if( isEventAttending( data ) ){                
+                if( isEventAttending( data, id  ) ){                
                     return done(null, profile);
                 }
                 else{
@@ -241,7 +241,7 @@ function secureApi(res, id, callback){
 	}
 }
 
-function isEventAttending( data ){
+function isEventAttending( data, id ){
 	var events = data.data;
     for( var i = 0; i < events.length; i++ ){
         var event = events[i];
@@ -258,7 +258,7 @@ function isEventAttending( data ){
               console.log(err);
               return;
             }
-            isEventAttending( data );
+            isEventAttending( data, id  );
         });
     }
     return false;
