@@ -258,12 +258,15 @@ function isEventAttending( data, id ){
               console.log(err);
               return false;
             }
+            console.log("call iseventattending");
             return isEventAttending( data, id  );
         });
     }
     else{
+    	console.log("return false");
     	return false;
     }
+    console.log("debug");
 }
 
 function ensureAuthenticated(req, res, next) {
