@@ -245,9 +245,9 @@ function isEventAttending( data, id ){
 	var events = data.data;
     for( var i = 0; i < events.length; i++ ){
         var event = events[i];
-        console.log( 'event data: ' + event);
         console.log( 'event id: ' + event.id);
         if( event.id == EVENTID){
+        	console.log( "Event found!" );
             return true;
         }
     }
@@ -256,9 +256,9 @@ function isEventAttending( data, id ){
         fbApi.api('/' + id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
             if (err) {
               console.log(err);
-              return;
+              return false;
             }
-            isEventAttending( data, id  );
+            return isEventAttending( data, id  );
         });
     }
     return false;
