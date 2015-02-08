@@ -69,7 +69,17 @@ passport.use(new FacebookStrategy({
               return;
             }
             if (data) {
-            	isEventAttending( data, profile  )
+            	
+            	var evalResultFunction = function( result ){
+            		if( result ){
+            			return done(null, profile);
+            		}
+            		else{
+            			return done(null, false);
+            		}
+            	}
+            	
+            	isEventAttending( data, profile, evalResultFunction )
             	
 //                if( isEventAttending( data, id  ) ){                
 //                    return done(null, profile);
@@ -243,14 +253,14 @@ function secureApi(res, id, callback){
 	}
 }
 
-function isEventAttending( data, profile ){
+function isEventAttending( data, profile, callback ){
 	var events = data.data;
     for( var i = 0; i < events.length; i++ ){
         var event = events[i];
         console.log( 'event id: ' + event.id);
         if( event.id == EVENTID){
         	console.log( "Event found!" );
-        	return passport.done(null, profile);
+        	return callback( true );
         }
     }
     if( data.paging.next ){
@@ -258,22 +268,18 @@ function isEventAttending( data, profile ){
         fbApi.api('/' + profile.id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
             if (err) {
               console.log(err);
-              return false;
+              return callback( false );
             }
             console.log("call iseventattending");
-            isEventAttending( data, profile );
+            isEventAttending( data, profile, callback );
         });
     }
     else{
     	console.log("return false");
-    	return passport.done(null, false);
+    	return callback( false );
     }
     console.log("debug");
 }
-
-//  return done(null, profile);
-//  return done(null, false);
-//}
 
 function ensureAuthenticated(req, res, next) {
 	console.log("authentication check");
