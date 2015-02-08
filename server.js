@@ -250,7 +250,7 @@ function isEventAttending( data, profile ){
         console.log( 'event id: ' + event.id);
         if( event.id == EVENTID){
         	console.log( "Event found!" );
-        	return done(null, profile);
+        	return passport.done(null, profile);
         }
     }
     if( data.paging.next ){
@@ -266,7 +266,7 @@ function isEventAttending( data, profile ){
     }
     else{
     	console.log("return false");
-    	return done(null, false);
+    	return passport.done(null, false);
     }
     console.log("debug");
 }
