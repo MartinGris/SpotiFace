@@ -69,12 +69,14 @@ passport.use(new FacebookStrategy({
               return;
             }
             if (data) {
-                if( isEventAttending( data, id  ) ){                
-                    return done(null, profile);
-                }
-                else{
-                    return done(null, false);
-                }
+            	isEventAttending( data, profile  )
+            	
+//                if( isEventAttending( data, id  ) ){                
+//                    return done(null, profile);
+//                }
+//                else{
+//                    return done(null, false);
+//                }
             }
         });
         
@@ -241,33 +243,37 @@ function secureApi(res, id, callback){
 	}
 }
 
-function isEventAttending( data, id ){
+function isEventAttending( data, profile ){
 	var events = data.data;
     for( var i = 0; i < events.length; i++ ){
         var event = events[i];
         console.log( 'event id: ' + event.id);
         if( event.id == EVENTID){
         	console.log( "Event found!" );
-            return true;
+        	return done(null, profile);
         }
     }
     if( data.paging.next ){
     	console.log( "Next: " + data.paging.next );
-        return fbApi.api('/' + id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
+        fbApi.api('/' + profile.id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
             if (err) {
               console.log(err);
               return false;
             }
             console.log("call iseventattending");
-            return isEventAttending( data, id  );
+            isEventAttending( data, id  );
         });
     }
     else{
     	console.log("return false");
-    	return false;
+    	return done(null, false);
     }
     console.log("debug");
 }
+
+//  return done(null, profile);
+//  return done(null, false);
+//}
 
 function ensureAuthenticated(req, res, next) {
 	console.log("authentication check");
