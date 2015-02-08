@@ -7,7 +7,6 @@ var EVENTID = '1234';
 var SONGLIMIT = 3;
 
 var express = require('express');
-var http = require('http').Server(app);
 var bodyParser = require('body-parser'); 
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); 
@@ -28,6 +27,7 @@ app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+var http = require('http').Server(app);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
@@ -69,12 +69,18 @@ passport.use(new FacebookStrategy({
               return;
             }
             if (data) {
-                if( isEventAttending( data.data ) ){                
-                    return done(null, profile);
-                }
-                else{
-                    return done(null, false);
-                }
+            	
+            	var evalResultFunction = function( result ){
+            		if( result ){
+            			return done(null, profile);
+            		}
+            		else{
+            			return done(null, false);
+            		}
+            	}
+            	
+            	isEventAttending( data, profile, evalResultFunction )
+            	
             }
         });
         
@@ -241,16 +247,29 @@ function secureApi(res, id, callback){
 	}
 }
 
-function isEventAttending( data ){
-    for( var i = 0; i < data.length; i++ ){
-        var event = data[i];
-        console.log( 'event data: ' + event);
+function isEventAttending( data, profile, callback ){
+	var events = data.data;
+    for( var i = 0; i < events.length; i++ ){
+        var event = events[i];
         console.log( 'event id: ' + event.id);
         if( event.id == EVENTID){
-            return true;
+        	console.log( "Event found!" );
+        	return callback( true );
         }
     }
-    return false;
+    if( data.paging.next ){
+        fbApi.api('/' + profile.id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
+            if (err) {
+              console.log(err);
+              return callback( false );
+            }
+            isEventAttending( data, profile, callback );
+        });
+    }
+    else{
+    	console.log("return false");
+    	return callback( false );
+    }
 }
 
 function ensureAuthenticated(req, res, next) {
