@@ -1,17 +1,18 @@
 #!/bin/env node
 
+var FACEBOOKCLIENTID = '656991001080494';
+var FACEBOOKSECRET = '57762c91c1d1bc4ed348334a19b7a015';
+var CALLBACKURL = 'http://spotiface-grisard.rhcloud.com/auth/facebook/callback';
 var EVENTID = '834220376624898';
 var SONGLIMIT = 3;
 
 var express = require('express');
-var bodyParser = require('body-parser'); // for reading POSTed form data into `req.body`
+var bodyParser = require('body-parser'); 
 var expressSession = require('express-session');
-var cookieParser = require('cookie-parser'); // the session is stored in a cookie, so we use this to parse it
+var cookieParser = require('cookie-parser'); 
 var passport = require('passport')
   , FacebookStrategy = require('passport-facebook').Strategy;
-  
 var sdk = require('facebook-node-sdk');
-
 var mysql = require('mysql');
 
 var app = express();
@@ -26,10 +27,7 @@ app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
 var http = require('http').Server(app);
-var io = require('socket.io')(http); 
-
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
@@ -49,22 +47,19 @@ db.connect(function(err){
 var fbApi;
 
 passport.use(new FacebookStrategy({
-    clientID: '656991001080494',
-    clientSecret: '57762c91c1d1bc4ed348334a19b7a015',
-    callbackURL: "http://spotiface-grisard.rhcloud.com/auth/facebook/callback"
+    clientID: FACEBOOKCLIENTID,
+    clientSecret: FACEBOOKSECRET,
+    callbackURL: CALLBACKURL
   },
   function(accessToken, refreshToken, profile, done) {
     
 	  fbApi = new sdk({
-            appId: '656991001080494',
-            secret: '57762c91c1d1bc4ed348334a19b7a015'
+            appId: FACEBOOKCLIENTID,
+            secret: FACEBOOKSECRET
         }).setAccessToken(accessToken);
     
-    
-    console.log(accessToken);
     process.nextTick(function() {
-        // console.log(profile.name.givenName);
-        // console.log(profile);
+        console.log( "userlogin: " + profile.name.givenName );
                 
         var id = profile.id;
                 
@@ -87,10 +82,6 @@ passport.use(new FacebookStrategy({
   }
 ));
 
-
-
-
-
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -98,7 +89,6 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(obj, done) {
   done(null, obj);
 });
-
 
 app.get('/', function(req, res){
   res.render('index',{});
@@ -116,10 +106,6 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook', {
   failureRedirect: '/error'
 }));
  
-app.get('/success', ensureAuthenticated, function(req, res, next) {
-  res.send('Successfully logged in. <a href="/logout"> LOGOUT </a>');
-});
- 
 app.get('/error', function(req, res, next) {
   res.send("Login failed");
 });
@@ -128,7 +114,7 @@ app.get('/logout', function(req, res, next) {
   req.logout();
   res.redirect('/');
 });
-// app.get('/spoti', ensureAuthenticated, function(req, res){
+
 app.get('/spoti', ensureAuthenticated, function(req, res, next){
 	db.query('SELECT * FROM user_song WHERE user_id = ?', [res.req.user.id], function(err, rows){
 		if(err){
@@ -140,7 +126,6 @@ app.get('/spoti', ensureAuthenticated, function(req, res, next){
 	});
 
 });
-
 
 app.get('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	
@@ -215,7 +200,6 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 			
 	        getUserName( saveInDb );
 	        
-			
 			res.send( songId );
 			
 		});
@@ -249,7 +233,7 @@ start();
 function secureApi(res, id, callback){
 	if( res.req.user.id != id ){
 		console.log("cross usage of api is not allowed");
-		res.status(403).send('manipulate your own songlist, motherfucker!')
+		res.status(403).send('Manipulate your own songlist, motherfucker!')
 		return;
 	}
 	else{
