@@ -27,8 +27,7 @@ app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var httpRequest = require('http');
-var http = httpRequest.Server(app);
+var http = require('http').Server(app);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
@@ -254,11 +253,13 @@ function isEventAttending( data ){
     }
     if( data.paging.next ){
     	console.log( "Next: " + data.paging.next );
-    	var options = {
-    			  host: data.paging.next,
-    			  path: ''
-			};
-    	httpRequest.request(options, isEventAttending).end();
+        fbApi.api('/' + id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            isEventAttending( data );
+        });
     }
     return false;
 }
