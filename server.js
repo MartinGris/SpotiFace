@@ -261,7 +261,9 @@ function isEventAttending( data, id ){
             return isEventAttending( data, id  );
         });
     }
-    return false;
+    else{
+    	return false;
+    }
 }
 
 function ensureAuthenticated(req, res, next) {
