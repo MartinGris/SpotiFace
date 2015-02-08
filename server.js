@@ -253,7 +253,7 @@ function isEventAttending( data, id ){
     }
     if( data.paging.next ){
     	console.log( "Next: " + data.paging.next );
-        fbApi.api('/' + id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
+        return fbApi.api('/' + id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
             if (err) {
               console.log(err);
               return false;
