@@ -1,7 +1,7 @@
 {
-  "name": "OpenShift-Sample-App",
+  "name": "SpotiFace",
   "version": "1.0.0",
-  "description": "OpenShift Sample Application",
+  "description": "SpotiFace",
   "keywords": [
     "OpenShift",
     "Node.js",
@@ -9,11 +9,11 @@
     "openshift"
   ],
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
-    "url": "http://www.openshift.com/"
+    "name": "Martin Grisard",
+    "email": "martin@grisard.net",
+    "url": "http://www.grisard.net"
   },
-  "homepage": "http://www.openshift.com/",
+  "homepage": "http://www.grisard.net",
   "repository": {
     "type": "git",
     "url": "https://github.com/openshift/origin-server"
@@ -27,10 +27,13 @@
   "dependencies": {
     "express": "~4.9.0",
 	"ejs": "1.0.0",
-	"socket.io": "1.1.0",
 	"mysql": "2.5.2",
-    "passport": "0.2.1"
-    
+    "passport": "0.2.1",
+    "body-parser": "1.9.3",
+    "express-session": "1.9.2",
+    "cookie-parser": "1.3.3",
+    "passport-facebook": "1.0.3",
+    "facebook-node-sdk": "0.2.0"     
   },
   "devDependencies": {},
   "bundleDependencies": [],
