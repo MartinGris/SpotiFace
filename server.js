@@ -261,7 +261,7 @@ function isEventAttending( data, profile ){
               return false;
             }
             console.log("call iseventattending");
-            isEventAttending( data, id  );
+            isEventAttending( data, profile );
         });
     }
     else{
