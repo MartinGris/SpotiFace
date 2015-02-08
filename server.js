@@ -7,7 +7,6 @@ var EVENTID = '834220376624898';
 var SONGLIMIT = 3;
 
 var express = require('express');
-var http = require('http').Server(app);
 var bodyParser = require('body-parser'); 
 var expressSession = require('express-session');
 var cookieParser = require('cookie-parser'); 
@@ -28,6 +27,7 @@ app.use(passport.session());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 
+var http = require('http').Server(app);
 app.use(express.static(__dirname + '/public'));
 app.set('view engine', 'ejs');
 
