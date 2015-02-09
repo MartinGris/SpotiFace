@@ -3,7 +3,7 @@
 var FACEBOOKCLIENTID = '656991001080494';
 var FACEBOOKSECRET = '57762c91c1d1bc4ed348334a19b7a015';
 var CALLBACKURL = 'http://spotiface-grisard.rhcloud.com/auth/facebook/callback';
-var EVENTID = '33651642083';
+var EVENTID = '451597004988379';
 var SONGLIMIT = 3;
 
 var express = require('express');
