@@ -4,6 +4,7 @@ var FACEBOOKCLIENTID = '1234';
 var FACEBOOKSECRET = '1234';
 var CALLBACKURL = 'http://test/auth/facebook/callback';
 var EVENTID = '1234';
+
 var SONGLIMIT = 3;
 
 var express = require('express');
@@ -97,7 +98,7 @@ passport.deserializeUser(function(obj, done) {
 });
 
 app.get('/', function(req, res){
-  res.render('index',{});
+  res.render('index',{errorMessage: ""});
 });
 
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: 'user_events' }));
@@ -113,7 +114,7 @@ app.get('/auth/facebook/callback', passport.authenticate('facebook', {
 }));
  
 app.get('/error', function(req, res, next) {
-  res.send("Login failed");
+	res.render('index',{errorMessage: "Login failed dude!"});
 });
 
 app.get('/logout', function(req, res, next) {
@@ -122,14 +123,14 @@ app.get('/logout', function(req, res, next) {
 });
 
 app.get('/spoti', ensureAuthenticated, function(req, res, next){
-	db.query('SELECT * FROM user_song WHERE user_id = ?', [res.req.user.id], function(err, rows){
-		if(err){
-			console.log("Error Selecting : %s ",err );
-		}
+//	db.query('SELECT * FROM user_song WHERE user_id = ?', [res.req.user.id], function(err, rows){
+//		if(err){
+//			console.log("Error Selecting : %s ",err );
+//		}
 		
-		res.render('spoti', { userId: res.req.user.id, songs: rows});
+		res.render('spoti', { userId: res.req.user.id });
 		
-	});
+//	});
 
 });
 

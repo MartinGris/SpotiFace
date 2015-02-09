@@ -11,6 +11,17 @@
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
   </head>
   
+  <script type="text/javascript">
+  		
+  		$(document).ready(function () {
+	  		var errorMessage = $( '#alertDiv' ).html();
+	  		
+	  		if(errorMessage != ''){
+				$( '#alertDiv' ).show();  		
+	  		}
+  		});
+  </script>
+  
   <body>
 	<div class="navbar navbar-inverse navbar-static-top">
 		<div class="container-fluid">
@@ -21,7 +32,7 @@
 		</div>
 	</div>
 	
-	<div id="alertDiv" class="alert alert-danger" role="alert" style="display:none;"></div>
+	<div id="alertDiv" class="alert alert-danger" role="alert" style="display:none;"><%= errorMessage %></div>
 	
 	<div class="text-center" style="margin-top: 5%">
 	    <a class="btn btn-primary btn-lg" href="/auth/facebook">Login with Facebook</a>
