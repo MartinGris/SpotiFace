@@ -6,7 +6,7 @@ var CALLBACKURL = 'http://test/auth/facebook/callback';
 var EVENTID = '1234';
 
 var SONGLIMIT = 3;
-var LONGLIFETOKEN = 'CAAJVh6M9cq4BABy46NAdAcd8NPo1DOtqKK0QHGVZBrEuGaTpZBzJEiRR6R1udI1uVZAtN6Y4UeY2UyrgbpYQVpLwa8am8gScPTZC3AbbynnD6O5E7h1pZAnR5uNKAp6IUGZCfl49ZALFegnEYuh7FoxfIZAZCTopZAFXdZCUZCk1qoHYYZCCbFjfZAPQqP';
+var LONGLIFETOKEN = 'veryLongToken';
 
 var express = require('express');
 var bodyParser = require('body-parser'); 
