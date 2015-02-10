@@ -20,9 +20,9 @@ var mysql = require('mysql');
 var app = express();
 
 // must use cookieParser before expressSession
-app.use(cookieParser('Mast3rOfD3sast3r'));
+app.use(cookieParser('secret'));
 
-app.use(expressSession({secret:'Mast3rOfD3sast3r'}));
+app.use(expressSession({secret:'secret'}));
 
 app.use(passport.initialize());
 app.use(passport.session());
