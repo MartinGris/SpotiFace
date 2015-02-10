@@ -163,6 +163,7 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	
 	var userId = req.params.id;
 	var songId = req.body.songId;
+	var songName = req.body.songName;
 	var userName;
 	
 	secureApi(res, userId, function(){
@@ -197,12 +198,13 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	        	});
 	        }; 
 	        	
-	        var saveInDb = function( username ){
-	        	console.log( username );
+	        var saveInDb = function( userName ){
+	        	console.log( userName );
 	        	var data = {
 	        			user_id   : userId,
 	        			song_id   :  songId,
-	        			user_name :	username
+	        			user_name :	userName,
+	        			song_name : songName
 	        	};
 	        	var query = db.query("INSERT INTO user_song set ? ",data, function(err, rows){
 	        		if (err){
