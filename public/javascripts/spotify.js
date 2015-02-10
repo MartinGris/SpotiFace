@@ -138,10 +138,10 @@ function playStopSong( src, element ){
 	var classList = element.classList;
 
 	if( element.hasClass( "glyphicon-play-circle" )){
-		document.getElementById("iframePlay").src=src;
+		document.getElementById("previewPlay").src=src;
 	}
 	else{
-		document.getElementById("iframePlay").src="";
+		document.getElementById("previewPlay").src="";
 	}
 }
 
