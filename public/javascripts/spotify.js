@@ -45,8 +45,8 @@ function searchAjaxRequest( searchInput ){
 		    	
 		    	rowString = "<tr> <td>" + data.tracks.items[i].artists[0].name + "</td>";
 		    	rowString += "<td>" + data.tracks.items[i].name + "</td>";
-		    	rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \" " + data.tracks.items[i].preview_url + " \", $(this)); toggleButton($(this));' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
-		    	rowString += " <a><span onClick='javascript: addSong(\""+ data.tracks.items[i].id + "\")' class='glyphicon glyphicon-plus'></span></a> </td> </tr>";
+		    	rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \"" + data.tracks.items[i].preview_url + "\", $(this)); toggleButton($(this));' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
+		    	rowString += " <a><span onClick='javascript: addSong(\""+ data.tracks.items[i].id + "\", \"" + data.tracks.items[i].name + "\")' class='glyphicon glyphicon-plus'></span></a> </td> </tr>";
 		    	
 		    	$("#searchResult tbody").append( rowString );
 		    }
@@ -68,12 +68,12 @@ function searchAjaxRequest( searchInput ){
 	
 }
 
-function addSong( id ){
+function addSong( id, name ){
 	$.ajax({
 		  type: "PUT",
 		  url: "http://spotiface-grisard.rhcloud.com/spoti/user/" + userId +  "/songs",
 		  dataType: "json",
-		  data: {songId: id},
+		  data: {songId: id, songName: name},
 		  statusCode: {
 				  423: function( data ) {
 
@@ -138,10 +138,10 @@ function playStopSong( src, element ){
 	var classList = element.classList;
 
 	if( element.hasClass( "glyphicon-play-circle" )){
-		document.getElementById("iframePlay").src=src;
+		document.getElementById("previewPlay").src=src;
 	}
 	else{
-		document.getElementById("iframePlay").src="";
+		document.getElementById("previewPlay").src="";
 	}
 }
 

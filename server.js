@@ -6,6 +6,7 @@ var CALLBACKURL = 'http://test/auth/facebook/callback';
 var EVENTID = '1234';
 
 var SONGLIMIT = 3;
+var LONGLIFETOKEN = 'CAAJVh6M9cq4BABy46NAdAcd8NPo1DOtqKK0QHGVZBrEuGaTpZBzJEiRR6R1udI1uVZAtN6Y4UeY2UyrgbpYQVpLwa8am8gScPTZC3AbbynnD6O5E7h1pZAnR5uNKAp6IUGZCfl49ZALFegnEYuh7FoxfIZAZCTopZAFXdZCUZCk1qoHYYZCCbFjfZAPQqP';
 
 var express = require('express');
 var bodyParser = require('body-parser'); 
@@ -46,6 +47,7 @@ db.connect(function(err){
 })
 
 var fbApi;
+var fbApiLongLifeToken;
 
 passport.use(new FacebookStrategy({
     clientID: FACEBOOKCLIENTID,
@@ -58,13 +60,18 @@ passport.use(new FacebookStrategy({
             appId: FACEBOOKCLIENTID,
             secret: FACEBOOKSECRET
         }).setAccessToken(accessToken);
+
+	  fbApiLongLifeToken = new sdk({
+		  appId: FACEBOOKCLIENTID,
+		  secret: FACEBOOKSECRET
+	  }).setAccessToken(LONGLIFETOKEN);
     
     process.nextTick(function() {
         console.log( "userlogin: " + profile.name.givenName );
                 
         var id = profile.id;
                 
-        fbApi.api('/' + id + '/events/attending', function(err, data) {
+        fbApiLongLifeToken.api('/' + EVENTID + '/attending', function(err, data) {
             if (err) {
               console.log(err);
               return;
@@ -80,7 +87,7 @@ passport.use(new FacebookStrategy({
             		}
             	}
             	
-            	isEventAttending( data, profile, evalResultFunction )
+            	isEventAttendingByUserList( data, profile, evalResultFunction )
             	
             }
         });
@@ -157,6 +164,7 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	
 	var userId = req.params.id;
 	var songId = req.body.songId;
+	var songName = req.body.songName;
 	var userName;
 	
 	secureApi(res, userId, function(){
@@ -191,12 +199,13 @@ app.put('/spoti/user/:id/songs', ensureAuthenticated, function(req, res, next){
 	        	});
 	        }; 
 	        	
-	        var saveInDb = function( username ){
-	        	console.log( username );
+	        var saveInDb = function( userName ){
+	        	console.log( userName );
 	        	var data = {
 	        			user_id   : userId,
 	        			song_id   :  songId,
-	        			user_name :	username
+	        			user_name :	userName,
+	        			song_name : songName
 	        	};
 	        	var query = db.query("INSERT INTO user_song set ? ",data, function(err, rows){
 	        		if (err){
@@ -248,7 +257,7 @@ function secureApi(res, id, callback){
 	}
 }
 
-function isEventAttending( data, profile, callback ){
+function isEventAttendingByEventList( data, profile, callback ){
 	var events = data.data;
     for( var i = 0; i < events.length; i++ ){
         var event = events[i];
@@ -259,18 +268,43 @@ function isEventAttending( data, profile, callback ){
         }
     }
     if( data.paging.next ){
-        fbApi.api('/' + profile.id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
+    	fbApiLongLifeToken.api('/' + profile.id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
             if (err) {
               console.log(err);
               return callback( false );
             }
-            isEventAttending( data, profile, callback );
+            isEventAttendingByEventList( data, profile, callback );
         });
     }
     else{
     	console.log("return false");
     	return callback( false );
     }
+}
+
+function isEventAttendingByUserList( data, profile, callback ){
+	var users = data.data;
+	for( var i = 0; i < users.length; i++ ){
+		var user = users[i];
+		console.log( 'user id: ' + user.id);
+		if( user.id == profile.id){
+			console.log( "User found!" );
+			return callback( true );
+		}
+	}
+	if( data.paging.next ){
+		fbApiLongLifeToken.api('/' + EVENTID + '/attending',{ after: data.paging.cursors.after }, function(err, data) {
+			if (err) {
+				console.log(err);
+				return callback( false );
+			}
+			isEventAttendingByUserList( data, profile, callback );
+		});
+	}
+	else{
+		console.log("return false");
+		return callback( false );
+	}
 }
 
 function ensureAuthenticated(req, res, next) {
