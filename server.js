@@ -66,7 +66,7 @@ passport.use(new FacebookStrategy({
 	  }).setAccessToken(LONGLIFETOKEN);
     
     process.nextTick(function() {
-        console.log( "userlogin: " + profile.name );
+        console.log( "userlogin: " + profile.name.givenName );
                 
         var id = profile.id;
                 
