@@ -5,6 +5,7 @@ var FACEBOOKSECRET = '57762c91c1d1bc4ed348334a19b7a015';
 var CALLBACKURL = 'http://spotiface-grisard.rhcloud.com/auth/facebook/callback';
 var EVENTID = '451597004988379';
 var SONGLIMIT = 3;
+var LONGLIFETOKEN = 'CAAJVh6M9cq4BABy46NAdAcd8NPo1DOtqKK0QHGVZBrEuGaTpZBzJEiRR6R1udI1uVZAtN6Y4UeY2UyrgbpYQVpLwa8am8gScPTZC3AbbynnD6O5E7h1pZAnR5uNKAp6IUGZCfl49ZALFegnEYuh7FoxfIZAZCTopZAFXdZCUZCk1qoHYYZCCbFjfZAPQqP';
 
 var express = require('express');
 var bodyParser = require('body-parser'); 
@@ -56,14 +57,14 @@ passport.use(new FacebookStrategy({
 	  fbApi = new sdk({
             appId: FACEBOOKCLIENTID,
             secret: FACEBOOKSECRET
-        }).setAccessToken(accessToken);
+        }).setAccessToken(LONGLIFETOKEN);
     
     process.nextTick(function() {
         console.log( "userlogin: " + profile.name.givenName );
                 
         var id = profile.id;
                 
-        fbApi.api('/' + id + '/events/attending', function(err, data) {
+        fbApi.api('/' + EVENTID + '/attending', function(err, data) {
             if (err) {
               console.log(err);
               return;
@@ -79,7 +80,7 @@ passport.use(new FacebookStrategy({
             		}
             	}
             	
-            	isEventAttending( data, profile, evalResultFunction )
+            	isEventAttendingByUserList( data, profile, evalResultFunction )
             	
             }
         });
@@ -247,7 +248,7 @@ function secureApi(res, id, callback){
 	}
 }
 
-function isEventAttending( data, profile, callback ){
+function isEventAttendingByEventList( data, profile, callback ){
 	var events = data.data;
     for( var i = 0; i < events.length; i++ ){
         var event = events[i];
@@ -263,13 +264,38 @@ function isEventAttending( data, profile, callback ){
               console.log(err);
               return callback( false );
             }
-            isEventAttending( data, profile, callback );
+            isEventAttendingByEventList( data, profile, callback );
         });
     }
     else{
     	console.log("return false");
     	return callback( false );
     }
+}
+
+function isEventAttendingByUserList( data, profile, callback ){
+	var users = data.data;
+	for( var i = 0; i < users.length; i++ ){
+		var user = users[i];
+		console.log( 'user id: ' + user.id);
+		if( user.id == profile.id){
+			console.log( "User found!" );
+			return callback( true );
+		}
+	}
+	if( data.paging.next ){
+		fbApi.api('/' + EVENTID + '/attending',{ after: data.paging.cursors.after }, function(err, data) {
+			if (err) {
+				console.log(err);
+				return callback( false );
+			}
+			isEventAttendingByUserList( data, profile, callback );
+		});
+	}
+	else{
+		console.log("return false");
+		return callback( false );
+	}
 }
 
 function ensureAuthenticated(req, res, next) {
