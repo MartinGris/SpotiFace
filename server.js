@@ -46,6 +46,7 @@ db.connect(function(err){
 })
 
 var fbApi;
+var fbApiLongLifeToken;
 
 passport.use(new FacebookStrategy({
     clientID: FACEBOOKCLIENTID,
@@ -57,14 +58,19 @@ passport.use(new FacebookStrategy({
 	  fbApi = new sdk({
             appId: FACEBOOKCLIENTID,
             secret: FACEBOOKSECRET
-        }).setAccessToken(LONGLIFETOKEN);
+        }).setAccessToken(accessToken);
+
+	  fbApiLongLifeToken = new sdk({
+		  appId: FACEBOOKCLIENTID,
+		  secret: FACEBOOKSECRET
+	  }).setAccessToken(LONGLIFETOKEN);
     
     process.nextTick(function() {
         console.log( "userlogin: " + profile.name.givenName );
                 
         var id = profile.id;
                 
-        fbApi.api('/' + EVENTID + '/attending', function(err, data) {
+        fbApiLongLifeToken.api('/' + EVENTID + '/attending', function(err, data) {
             if (err) {
               console.log(err);
               return;
@@ -259,7 +265,7 @@ function isEventAttendingByEventList( data, profile, callback ){
         }
     }
     if( data.paging.next ){
-        fbApi.api('/' + profile.id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
+    	fbApiLongLifeToken.api('/' + profile.id + '/events/attending',{ after: data.paging.cursors.after }, function(err, data) {
             if (err) {
               console.log(err);
               return callback( false );
@@ -284,7 +290,7 @@ function isEventAttendingByUserList( data, profile, callback ){
 		}
 	}
 	if( data.paging.next ){
-		fbApi.api('/' + EVENTID + '/attending',{ after: data.paging.cursors.after }, function(err, data) {
+		fbApiLongLifeToken.api('/' + EVENTID + '/attending',{ after: data.paging.cursors.after }, function(err, data) {
 			if (err) {
 				console.log(err);
 				return callback( false );
