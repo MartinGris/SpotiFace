@@ -46,7 +46,7 @@ function searchAjaxRequest( searchInput ){
 		    	rowString = "<tr> <td>" + data.tracks.items[i].artists[0].name + "</td>";
 		    	rowString += "<td>" + data.tracks.items[i].name + "</td>";
 		    	rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \"" + data.tracks.items[i].preview_url + "\", $(this)); toggleButton($(this));' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
-		    	rowString += " <a><span onClick='javascript: addSong(\""+ data.tracks.items[i].id + "\", \"" + data.tracks.items[i].name + "\")' class='glyphicon glyphicon-plus'></span></a> </td> </tr>";
+		    	rowString += " <a><span onClick='javascript: addSong(\""+ data.tracks.items[i].id + "\", \"" + escape(data.tracks.items[i].name) + "\")' class='glyphicon glyphicon-plus'></span></a> </td> </tr>";
 		    	
 		    	$("#searchResult tbody").append( rowString );
 		    }
@@ -100,7 +100,6 @@ function displaySong( songId ){
 		  
 		  rowString = "<tr id ='" + songId + "'> <td>" + data.artists[0].name + "</td>";
 		  rowString += "<td>" + data.name + "</td>";
-//		  rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong(\" http://p.scdn.co/mp3-preview/47036ef8fda884d6cb3a40f3ae8a07da6bdea52e\", $(this) ); toggleButton( $(this) );' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
 		  rowString += "<td class='text-center'><a><span onClick='javascript: playStopSong( \"" + data.preview_url + "\", $(this) ); toggleButton( $(this) );' class='playbutton glyphicon glyphicon-play-circle'></span></a>";
 		  rowString += " <a><span onClick='javascript: deleteSong(\""+ data.id + "\")' class='glyphicon glyphicon-trash'></span></a> </td> </tr>";
 		  
