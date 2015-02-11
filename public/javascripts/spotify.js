@@ -140,7 +140,6 @@ function playStopSong( src, element ){
 
 	if( element.hasClass( "glyphicon-play-circle" )){
 		document.getElementById("previewPlay").src=src;
-		document.getElementById("previewPlay").load();
 		document.getElementById("previewPlay").play();
 	}
 	else{
